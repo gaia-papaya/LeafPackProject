@@ -7,8 +7,14 @@ source("Rscripts/biodiversity.R")#script to process biodiversity data
 source("Rscripts/water_quality.R")#script to process water quality data
 source("Rscripts/plot_source.R") #source code for custom plotting functions
 
-#join together summ_water_quality and biodiversity data
-joined <- full_join(x = wq_list$summ_water_quality, y = bd_list$biodiversity, by = c("date", "site"), multiple = "all")
+#join together summ_water_quality and biodiversity data, retaining only the obs in biodiversity
+joined <- right_join(x = wq_list$summ_water_quality, y = bd_list$biodiversity, by = c("date", "site"), multiple = "all")
+
+#principal component analysis:
+taxaCount_PCA <- prcomp(as.matrix(select(bd_list$biodiversity, MidgeFlies:RightHandedSnails)))
+#merge PCAs with rest of data to create full dataset
+LPP_FullData <- tibble(joined, #main dataset
+                       select(as.tibble(taxaCount_PCA$x), PC1,PC2,PC3))
 
 #statistical analyzes:
 #diversity model object list 

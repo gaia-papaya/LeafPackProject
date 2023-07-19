@@ -8,8 +8,7 @@ require(googlesheets4)
 
 #data reforamtting----
 #read in sheets file from google drive link
-wq <- read_sheet("https://docs.google.com/spreadsheets/d/1_8Fph2bfNAaMCpI9q8LHModg78G5v4BVoOnJUHY-knE/edit#gid=0",
-                 sheet = 2, na = "NA") %>%
+wq <- read_excel("Rdata/LPP.xlsx",sheet = 2, na = "NA") %>%
   select(!c(d_mean, d_se, m_mean, m_se, u_mean, u_se))%>% #select out calculated columns
   pivot_wider( names_from ="param", values_from = c("d_rep1", "d_rep2", "d_rep3",
                                                     "m_rep1", "m_rep2", "m_rep3",
@@ -47,6 +46,7 @@ water_quality <- wq %>%
   pivot_longer(cols = ends_with("_Flow"), values_to = "Flow",names_to = "rn_Flow") %>%
   select(!starts_with("rn_"))
 
+#NOTE TO SELF: stop calling across w/o argumetns or you might break your code!!!
 #summary statsitics table grouped by site
 wq_site_summary <- water_quality %>%
   group_by(site) %>%

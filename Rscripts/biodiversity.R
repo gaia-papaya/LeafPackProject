@@ -1,5 +1,5 @@
 #dependencies----
-require(googlesheets4)
+require(readxl)
 require(tidyverse)
 require(vegan)
 
@@ -11,8 +11,7 @@ require(vegan)
 
 #data reforamtting----
 #read in sheets file from google drive link
-bd <- read_sheet("https://docs.google.com/spreadsheets/d/1_8Fph2bfNAaMCpI9q8LHModg78G5v4BVoOnJUHY-knE/edit#gid=1699683095",
-                 sheet = 1) %>%
+bd <- read_excel("Rdata/LPP.xlsx" ,sheet = 1) %>%
   filter(material != "Cellulose (Treated)") %>% #exclude Cellulose treated data from dataset
   #reformat site names,attachment style to consistent standard values
   mutate(site = str_remove(site, "-"), 
