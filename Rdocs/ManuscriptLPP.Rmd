@@ -1,0 +1,39 @@
+---
+title: Biodegradable alternatives to plastic mesh bags conventionally used in freshwater
+  macroinvertebrate analysis within the Bronx River, NYC
+author: "R.E. Segui-Baez, G.A. Rueda Moreno, R. Ward, K. Schneider Paolantonio"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+#knitr options----
+knitr::opts_chunk$set(echo = TRUE)
+#dependencies----
+require(GGally)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r pre-requisite scripts, eval =FALSE}
+#source data processor scripts----
+source("Rscripts/biodiversity.R")#script to process biodiversity data
+source("Rscripts/water_quality.R")#script to process water quality data
+source("Rscripts/statistics.R") #script to analyze previously loaded data
+source("Rscripts/plot_source.R") #source code for custom plotting functions
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r plots, echo=FALSE}
+ggpairs(select(bd_list$biodiversity, MidgeFlies:Planaria))
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

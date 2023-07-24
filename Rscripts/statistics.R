@@ -1,13 +1,7 @@
 #dependencies----
 require(car)
+require(vegan)
 require(tidyverse)
-require(corrplot)
-require(viridisLite)
-
-#source data processor scripts----
-source("Rscripts/biodiversity.R")#script to process biodiversity data
-source("Rscripts/water_quality.R")#script to process water quality data
-source("Rscripts/plot_source.R") #source code for custom plotting functions
 
 #join together summ_water_quality and biodiversity data, retaining only the obs in biodiversity
 joined <- right_join(x = wq_list$summ_water_quality, y = bd_list$biodiversity, by = c("date", "site"), multiple = "all")
@@ -132,5 +126,9 @@ corrplot(taxaCount_PCA$rotation[,1:3])
 
 ggplot(LPP_FullData, aes(x = PC1, y = PC2, fill = material)) +
   geom_point(shape = 21) +
-  facet_wrap(~site) +
+  facet_wrap(~date) +
   scale_fill_viridis_d()
+
+#NMDS
+set.seed(420)
+ NMDS_LPP <- vegan::metaMDS(select(bd_list$biodiversity, MidgeFlies:RightHandedSnails))

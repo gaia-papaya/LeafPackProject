@@ -9,6 +9,8 @@ require(googlesheets4)
 require(viridisLite)
 require(rlang)
 require(car)
+require(corrplot)
+require(factoextra)
 
 #STATISTICS----
 
