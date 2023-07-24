@@ -1,6 +1,8 @@
 #dependencies----
 require(car)
 require(tidyverse)
+require(corrplot)
+require(viridisLite)
 
 #source data processor scripts----
 source("Rscripts/biodiversity.R")#script to process biodiversity data
@@ -125,3 +127,10 @@ wq_list$site_summ_wq %>%
 arrange(desc(site)) %>%
 write_csv( file = "Rdata/wq_summary_by site.csv")
 
+
+corrplot(taxaCount_PCA$rotation[,1:3])
+
+ggplot(LPP_FullData, aes(x = PC1, y = PC2, fill = material)) +
+  geom_point(shape = 21) +
+  facet_wrap(~site) +
+  scale_fill_viridis_d()
