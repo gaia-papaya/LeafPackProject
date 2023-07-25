@@ -1,6 +1,7 @@
 #dependencies----
 require(car)
 require(vegan)
+require(corrplot)
 require(tidyverse)
 
 #join together summ_water_quality and biodiversity data, retaining only the obs in biodiversity
@@ -13,19 +14,19 @@ LPP_FullData <- tibble(joined, #main dataset
                        select(as.tibble(taxaCount_PCA$x), PC1,PC2,PC3))
 
 #statistical analyzes:
-#diversity model object list 
+#diversity model object list---- 
 #FORMULA: INDEX ~ MATERIAL + DATE
 diversity_mod_objects <- list(#taxa wide anova model objects
-                              shannon = aov(shannon ~ material + as.factor(date) , data = joined),
-                              simpson = aov(simpson ~ material + as.factor(date) , data = joined),
-                              invsimp = aov(simpson ~ material + as.factor(date) , data = joined),
-                              evenness = aov(even ~ material + as.factor(date) , data = joined),
-                              richness = aov(richness ~ material + as.factor(date), data = joined),
+                              shannon = aov(shannon ~ material + as.factor(date) , data = LPP_FullData),
+                              simpson = aov(simpson ~ material + as.factor(date) , data = LPP_FullData),
+                              invsimp = aov(simpson ~ material + as.factor(date) , data = LPP_FullData),
+                              evenness = aov(even ~ material + as.factor(date) , data = LPP_FullData),
+                              richness = aov(richness ~ material + as.factor(date), data = LPP_FullData),
                               #functional group anova model objects
-                              coll_shannon = aov(collector_shannon ~ material + as.factor(date)   , data = joined),
-                              scr_shannon = aov(shredder_shannon ~ material + as.factor(date)   , data = joined),
-                              pre_shannon = aov(predator_shannon ~ material + as.factor(date)   , data = joined),
-                              shr_shannon = aov(shredder_shannon ~ material + as.factor(date)   , data = joined))
+                              coll_shannon = aov(collector_shannon ~ material + as.factor(date)   , data = LPP_FullData),
+                              scr_shannon = aov(shredder_shannon ~ material + as.factor(date)   , data = LPP_FullData),
+                              pre_shannon = aov(predator_shannon ~ material + as.factor(date)   , data = LPP_FullData),
+                              shr_shannon = aov(shredder_shannon ~ material + as.factor(date)   , data = LPP_FullData))
                 
 #Type two anova list using car::Anova function 
 diversity_tests <- diversity_mod_objects %>%
@@ -50,7 +51,7 @@ for(t in 1:length(diversity_tests)){
   #remove NA elements of tukey list
   diversity_tukeys <- compact(diversity_tukeys)
 }
-
+#WATER QUALITY----
 #wq model objects
 wq_mod_objects <- list(
   P = aov(P~as.factor(date)+site, data = wq_list$raw_water_quality),
@@ -86,30 +87,11 @@ for(t in 1:length(wq_tests)){
 }
 
 #correlation testing
-cor.test(joined$bag_quality, joined$richness)
+cor.test(LPP_FullData$bag_quality, LPP_FullData$richness)
 
-#eda----
-#cummul richness bag type barplots
-bt_barplot( "shannon")+ labs(x = "Material", y= "Shannon Diversity")
-bt_barplot( "simpson")+ labs(x = "Material",y= "Simpson Diversity")
-bt_barplot( "invsimp")+ labs(x = "Material",y= "Inverse-Simpson Diversity")
-bt_barplot( "richness")+ labs(x = "Material", y="Richness")
-bt_barplot("even")+ labs(x = "Material",y= "Shannon Evenness")
-
-#water quality by date on the y and site as color
-wq_ts_BySite("P")
-wq_ts_BySite("pH")
-wq_ts_BySite("NH3")
-wq_ts_BySite("DO")
-wq_ts_BySite("Temp")
-wq_ts_BySite("Cond")
-wq_ts_BySite("Nitrogen")
-wq_ts_BySite("Flow") + labs(title = "Flow rate seasonality",
-                            x = "Date", y = "Flow (m/s)")
-
+#muin::dredge for model selection
 #correl plot
-
-ggplot(filter(joined, is.na(material) == FALSE), aes(x = bag_quality*5, y = richness)) +
+ggplot(filter(LPP_FullData, is.na(material) == FALSE), aes(x = bag_quality*5, y = richness)) +
   geom_point(aes(color = material)) + geom_smooth(method = "lm", se = F, color = 'black')+
   theme_bw() + theme_rafa(base_size = 15) +
   labs(x="Bag Quality Score", y="Richness",
@@ -130,5 +112,5 @@ ggplot(LPP_FullData, aes(x = PC1, y = PC2, fill = material)) +
   scale_fill_viridis_d()
 
 #NMDS
-set.seed(420)
- NMDS_LPP <- vegan::metaMDS(select(bd_list$biodiversity, MidgeFlies:RightHandedSnails))
+#set.seed(420)
+#NMDS_LPP <- vegan::metaMDS(select(bd_list$biodiversity, MidgeFlies:RightHandedSnails))

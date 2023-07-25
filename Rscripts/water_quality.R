@@ -1,6 +1,5 @@
 #dependencies:----
 require(tidyverse)
-require(googlesheets4)
 
 #README:
 #This script reads the water quality data from the 'Leaf Pack Project' sheet file on google drive @ "https://docs.google.com/spreadsheets/d/1_8Fph2bfNAaMCpI9q8LHModg78G5v4BVoOnJUHY-knE/edit#gid=0"
@@ -50,7 +49,7 @@ water_quality <- wq %>%
 #summary statsitics table grouped by site
 wq_site_summary <- water_quality %>%
   group_by(site) %>%
-  mutate(across(.fns = ~sd(., na.rm = T)/n(), .names = "{.col}_se")) %>%
+  mutate(across(everything(), .fns = ~sd(., na.rm = T)/n(), .names = "{.col}_se")) %>%
   summarise(across( .fns = ~mean(., na.rm = TRUE)))
 
 #summary statsitics table grouped by site and date

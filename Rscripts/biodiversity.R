@@ -7,9 +7,9 @@ require(vegan)
 #this script reads the biodiveristy data from the 'Leaf Pack Project' sheet file on google drive @ "https://docs.google.com/spreadsheets/d/1_8Fph2bfNAaMCpI9q8LHModg78G5v4BVoOnJUHY-knE/edit#gid=0"
 #sourced by the controller.R script. 
 
-#data reforamtting----
+#data reformatting----
 
-#data reforamtting----
+#data reformatting----
 #read in sheets file from google drive link
 bd <- read_excel("Rdata/LPP.xlsx" ,sheet = 1) %>%
   filter(material != "Cellulose (Treated)") %>% #exclude Cellulose treated data from dataset
@@ -22,7 +22,7 @@ bd <- read_excel("Rdata/LPP.xlsx" ,sheet = 1) %>%
          simpson =diversity(select(., str_which(names(.), "^[:upper:]")), index = "simpson"),
          invsimp = diversity(select(., str_which(names(.), "^[:upper:]")), index = "invsimpson"),
          bag_quality = eval(as.numeric(str_extract(bag_quality, "[:digit:]"))/5)) %>% #convert bag quality to numeric
-  mutate(even = shannon/log(richness), #calcluate shannon evenness
+  mutate(even = shannon/log(richness), #calculate shannon evenness
          mesh_size = case_when(material == "Biopolymer" ~ 10,
                                material == "Cellulose" ~ 3, #derive mesh size value from material
                                material == "Plastic" ~ 12.7,
@@ -45,7 +45,7 @@ bd_matrices <- list(
   predator_matrix = as.matrix(bd[predator])
 )
 
-#add functional group diversity as collumn
+#add functional group diversity as column
 biodiversity <- bd %>%
   mutate(collector_shannon = diversity(bd_matrices[["collector_matrix"]]),
          shredder_shannon = diversity(bd_matrices[["shredder_matrix"]]),
