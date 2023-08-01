@@ -24,7 +24,7 @@ require(factoextra)
 
 #plotting source code----
 #set plotting theme function 
-theme_rafa <- function(base_size){
+theme_rafa <- function(base_size = 12){
   theme_pubr(base_family="sans") %+replace%
     theme(panel.background  = element_blank(),
           plot.background = element_rect(fill="transparent", colour=NA), 
@@ -83,10 +83,10 @@ wq_ts_BySite <- function(param){
   #create symbol of parameter name and se for tidy eval in ggplot2 call
   param<- sym(param)
   param_se <- sym(paste(param,"se", sep = "_"))
-  ggplot(LPP_FullData, aes(x = date, y = !!param, color = site)) +
+  ggplot(wq_list$raw_water_quality, aes(x = date, y = !!param, color = site)) +
     #geom layers
     geom_point() +
-    geom_errorbar(aes(ymin = !!param - 2*!!param_se, ymax = !!param + 2*!!param_se)) + 
+     geom_smooth(method = 'lm')+
     #theme adjustments
     theme_bw() +
     theme_rafa(base_size = 15) +
@@ -96,19 +96,60 @@ wq_ts_BySite <- function(param){
 
 ##Abstract
 
+1. The traditional method of sampling aquatic systems utilizes plastic mesh leaf packs. Studies of amphibian and macroinvertebrate diversity, genetics, leaf degradation rates and bacterial colonization often utilize plastic mesh leaf packs within investigations. Due to factors such as inclement weather, debris accumulation, human error and symptoms of “urban stream syndrome”, these versatile packs with widespread usage are lost and contribute to large-scale pollution within aquatic systems. The presence of plastics in the Bronx River represents a threat to the organisms within the river system, with recent research suggesting the presence of twice as many microplastic particles as plankton at the mouth of the Bronx River. 
+2. In this study, we tested four biodegradable alternative packs at three locations along the Bronx River at a site visited by New York University’s (NYU) Ecological Field Methods (EFM) course. We assessed these materials based on: durability, portability, longevity, affordability and effectiveness at collecting invertebrate data compared to the plastic. 
+3. This study sampled 9,280 individuals from 17 discrete taxa. Amphipoda (genus Gammarus), Isopoda (genus Caecidotea), Diptera (suborder Nematocera), Basommatophora, and Oligochaetes made up the 5 most abundant taxa making up 95.8% of the total organisms seen. There were no statistically significant differences in terms of Shannon Diversity, Simpson Diversity, or Shannon Evenness between bag types but Richness was significant. The Jute and Biopolymer mesh performed exceptionally well in terms of durability, portability, longevity, affordability and effectiveness and surpassed the plastic standard in terms of richness.
+4. Our results presented several viable alternatives to the plastic standard, indicating a need for the scientific community to re-approach its methods for the analysis of ecosystemic health using leaf mesh packs. Results show that several non-plastic leaf packs do not impact the community assemblages, nor biodiversity of organisms within the packs.
+5. As climate change and urbanization increase with the passage of time, the local environments will have to contend with increasingly severe degrees of pollution and degradation. With this in mind, we encourage the utilization of novel methods that reduce the impact of scientific research on the environment and present a framework for future sustainable research in this area of inquiry.
+
+
 ##Introduction
+
+Despite being of critical ecological importance, urban streams are threatened by compounding anthropogenic stressors (Johnson et al. 2020). Habitat disturbances, as facilitated by human activity, such as the creation of extensive impervious land cover and engineered conveyance networks, amplify the hydrological load being placed on streams (Groffman et al. 2003). This amplification results in the degradation of both the physical, chemical, and biological stream environment, culminating in a phenomenon termed the ‘Urban Stream Syndrome’ (Meyer et al. 2005). Although physical and chemical changes are generally consistent between regions, biological responses to urbanization are much more dependent on regional factors (Booth et al. 2015). As such, the study of freshwater taxa and the wider ecological community has been critical for our understanding of the consequences of this Urban Stream Syndrome. 
+To produce data for this kind of inquiry, the scientific community has looked to indicator species as a means of drawing conclusions about ecosystemic health; taxa of interest have ranged from frogs (Quasipaa boulengeri Yang 2022) to wood storks (Mycteria americana Frederick et al. 2009) and even riparian lichen (Nelson 2015). Investigating aquatic macroinvertebrates as bioindicator species has been especially widespread during the examination of the health of aquatic ecosystems, being used across a variety of different biomes (Ilmonen et al 2009, Niba et al 2017, Arimoro et al 2021, Hu et al 2022). Macroinvertebrate taxa vary in their sensitivity and tolerance to environmental stressors, making them especially useful for these kinds of analyses (Pelletier et al 2010). The primary method of utilizing macroinvertebrates in biodiversity analysis within freshwater systems utilizes leaf mesh packs as the principal means of data collection (Merritt 1992, Robinson 2002, Kreutzweiser et al 2008, Vorste et al 2019).
+The usage of leaf mesh packs to study aquatic systems goes as far back as 1974 (Reice 1974) and they have been regularly used to investigate both macroinvertebrates and vertebrates alike (Waldron et al 2003, Talley et al 2012). This method employs plastic mesh bags filled with known quantities of leaves that are left in a stream and are allowed to be colonized by aquatic organisms for a standardized time after which they are retrieved and sorted. By creating a controlled and replicated habitat, leaf packs are efficient, cost effective and easy to use, frequently being deployed as school-group activities, advertised through organizations like the Stroud Leaf Pack Network as an initiative of the Stroud Water Research Center (https://stroudcenter.org/). However, due to inclement weather, shifts in current, water depth, debris accumulation, and a myriad of other factors, leaf packs can be lost during scientific proceedings (for example, see Meyer 1980). Thus complications begin to arise when one considers the wider scale of human activity within freshwater urban systems, specifically our relationship with plastic pollution.
+Leaf pack loss contributes to the introduction of both macroplastics and microplastics into aquatic systems. Defined as plastic particles less than 5mm in size, microplastics are often overlooked and are extremely hazardous to a range of organisms, including humans. Exposure to 3D printed plastics has been shown to induce a reduction in spontaneous embryonic movement, retardation of locomotion, and progressive paralysis in zebrafish (Walpitagama et al 2019). Once in water, plastics easily make their way into food webs, as observed in studies of plankton (Botterell et al 2022), lobsters (Welden and Cowie 2016), oysters (Sussarellu et al. 2016), shrimp (Curren et al 2020), fish (Mercogliango et al 2020), birds (Provencher et al. 2018, Carlin et al 2020) and orcas (Jepson et al 2016). In a recent literature review, Sequira et al. 2020 reported that a median 60% of fish from 24 countries carry microplastics in their organs. The study reported even higher levels in carnivores, thus underlining the threat of bioaccumulation (Sequira et al. 2020). If microplastic-contaminated fish are used for fish meal (Hanachi et al. 2019) or consumed directly, they can pose a direct threat to human health (Naik 2019). The toxicity of microplastics is not limited to their presence in food webs: due to their generally positive charge and surface area, microplastics can also absorb contaminants like heavy metals (Chen et al 2022), PCBs, pesticides, and flame retardants (Othman et al 2021). They can also be colonized by bacteria - including some that can be pathogenic to fish (Viršek et al. 2017).  In order to lessen the impact of scientific studies on the ecosystems in question, novel methodologies must be developed which limit the use of plastics. 
+The aim of this study is to determine alternatives to the plastic mesh bags conventionally used in studies of freshwater aquatic systems. We test four alternative materials and consider differences in their efficiency, cost, ease of implementation, and durability. Our aim is to promote the usage of these biodegradable alternatives such that we, as a community with the intention of examining the structure of a vulnerable system, can be conscientious of our contribution to the system’s degradation and choose more sustainable methods. 
 
 ##Methods
 
 ###Study Site and Timescale
 
+ The Bronx River is 23 miles long, stretching from Westchester County to the East River. The Bronx River Watershed is home to 2,451,404 people, many of whom come from minority groups and other underrepresented, displaced, and disenfranchised populations (Finewood et al 2023).
+ Our site in Shoelace Park is located approximately 9 km from the mouth of the river in Soundview Park in the South Bronx.  It sits East of Woodlawn Cemetery, bordered by the Bronx River Parkway, a major highway on Shoelace Park’s west side, followed by a set of train tracks, a park buffer to the east, and surrounded by residential and commercial development. Shoelace Park exemplifies many urban stream systems (Fig 1). Additionally, this stream has been visited annually for
+several years during New York University’s Ecological Field Methods course.
+
+![Fig 1: The location of our study sites in Shoelace Park, Bronx NY.](Rfigs/INSERT_FIG1_HERE)
+
+We sampled three locations (termed upstream, midstream and downstream) for four rounds of sampling between 2022 and 2023 (Oct 8 - Nov 4 2022 termed “Nov retrieval”, Nov 4 - Dec 4, termed “Dec retrieval”, March 4 - March 26, termed “March retrieval” and March 26 - April 16, termed “April retrieval”).  The three locations used during the study were between 30 and 40 meters apart (the locations were subject to minor changes in accessibility due to weather and changes in attachment points that varied with seasonal shifts of the landscape). 
+
+
 ###Leaf Packs: Preparation 
+
+During the course of the experiment, we followed procedures for placing, retrieving and analyzing leaf packs that have been used for decades within the Bronx River. These procedures were originally followed by Bronx River Restoration, a group that began cleaning up the Bronx River in the 1970s, and which subsequently transformed into the Bronx River Alliance, a non-profit and a division of the Bronx Parks. Because the Bronx River is geographically close to the Hudson River watershed, procedures recommended for use in the Hudson watershed were adopted for use in the Bronx River.
+Materials were selected according to their potential durability and lifespan, cost, and ease of use (our rationale can be seen in Appendix 1).  In addition to the conventional plastic, four other materials were chosen to represent a wide variety of potential biodegradable alternatives: biopolymer, cellulose, jute and cotton (Table 1). Consistent with traditional protocol (Stroud Water Research Center), each bag was each filled with 30 grams of leaves, evenly divided between oak, maple and beech, that were collected near the sampling site and dried prior to use.  Bags were closed by either knotting the material or weaving with nylon cord (see Appendix 2).
+During each sampling interval, each bag was anchored to exposed roots, submerged organic debris, trees or human constructed objects at the three sites in the river (Upstream, Midstream, and Downstream) using bricks and nylon cord. To account for seasonal changes in river depth, a generous amount of nylon was used to secure the bag to a brick which was then attached to submerged anthropogenic debris such as old pipes and human constructed structures, large exposed roots, or submerged organic debris like the fallen trunks of trees. The distance between the bag and the brick was minimized to stabilize the bag and reduce stress on the anchor knot. To allow for colonization by bacteria and invertebrates, bags remained submerged for four weeks (Stroud Water Research Center).
+
+```{r materials table}
+
+```
+
 
 ###Leaf Packs: Retrieval and Sorting
 
+After four weeks, bags were removed by carefully cutting the bag from the brick and placing it into a submerged Ziplock bag. The ziplock bags were held in buckets and transported to the sampling station. Leaf packs were sorted in a manner consistent with the Stroud Protocol (Stroud Water Research Center).  Bags were scored for durability on a 1 to 5 scale, with 5 describing bags being in roughly the same condition as when they were placed in the water and 1 being complete or near complete disintegration.
+Invertebrate identifications were made with laminated taxonomic keys and confirmed by photography or expert knowledge. Each individual observed was placed into its own temporary container alongside other members of its taxa, tallied up and recorded in data sheets. Taxa were classified by biotic health status and feeding status. After sampling, each organism was carefully transported back to the site along the river where it was retrieved.
+
+
 ###Water Quality
 
+Water quality parameters were recorded at each site during both the submerging and retrieval process. Nitrate (as Nitrogen) levels were measured using a Hach Nitraver 5 Nitrate Reagent test. Phosphate levels were measured using a Hach PhosVer 3 Phosphate Reagent test. Readings of Ammonia and pH were obtained using an API Aquarium Pharmaceuticals Ammonia (NH3/NH4+) and API high range pH test kits. Conductivity, dissolved oxygen and temperature were measured using YSI Ecosense EC 300 conductivity meter and probe and YSI EcoSense DO200-4/10 Dissolved Oxygen Probe. Flow rate (m/s) was determined using a ping pong ball and a meter stick. For most tests, we performed three trials at each site. 
+
+
 ###Data Analyses
+All data analyses were performed using R, version 4.1.2 (R core team, 2021), and the vegan package was used to compute diversity indices (Oksanen et al. 2022)
+
+
 
 
 ```{r pre-requisite scripts, eval =FALSE}
@@ -122,15 +163,9 @@ source("Rscripts/plot_source.R") #source code for custom plotting functions
 
 ##Results
 
-```{r result plots, echo=FALSE}
-#biodiversity plots----
-#cummul richness bag type barplots
-bt_barplot( "shannon")+ labs(x = "Material", y= "Shannon Diversity")
-bt_barplot( "simpson")+ labs(x = "Material",y= "Simpson Diversity")
-bt_barplot( "invsimp")+ labs(x = "Material",y= "Inverse-Simpson Diversity")
-bt_barplot( "richness")+ labs(x = "Material", y="Richness")
-bt_barplot("even")+ labs(x = "Material",y= "Shannon Evenness")
+###Water Quality
 
+```{r wq plots}
 #water quality dot plots
 #water quality by date on the y and site as color
 wq_ts_BySite("P")
@@ -142,8 +177,62 @@ wq_ts_BySite("Cond")
 wq_ts_BySite("Nitrogen")
 wq_ts_BySite("Flow") + labs(title = "Flow rate seasonality",
                             x = "Date", y = "Flow (m/s)")
-ggpairs(select(bd_list$biodiversity, MidgeFlies:Planaria))
 ```
+
+
+ANOVA testing of water quality parameters showed statistically significant differences both across sampling date ( P < 0.001)  and site (P < 0.001).
+
+
+```{r result plots, echo=FALSE}
+#biodiversity plots----
+#cummul richness bag type barplots
+
+
+
+ggpairs(select(bd_list$biodiversity, MidgeFlies:Planaria))
+
+#PCA plot:----
+#dotplot between pc1 and pc2, with % explained variance annotated in axis labels
+ggplot(data = LPP_FullData, aes(x = PC1, y = PC2, fill = material)) +
+  geom_point(shape = 21, size = 2.5) + 
+geom_abline(slope = 0, intercept = 0, linetype = 2) +
+  geom_vline(xintercept = 0, linetype = 2) +
+  
+  #thematics
+  scale_fill_viridis_d(begin = 0.1, end = 0.9, option = "G") +
+  theme_rafa(base_size = 16)
+
+#screeplot----
+fviz_eig(taxaCount_PCA) + theme_rafa(base_size = 16)
+```
+
+###Leaf Pack Efficiency
+####Overall Counts
+
+This study sampled 9,280 individuals from 17 discrete taxa. Amphipoda (genus Gammarus), Isopoda (genus Caecidotea), Diptera (suborder Nematocera), Basommatophora, and Oligochaetes made up the 5 most abundant taxa making up 95.8% of the total organisms seen.
+
+####Richness
+
+Taxonomic richness between bag types was statistically significant (P < 0.001, Figure 2). A subsequent Tukey-Kramer test revealed statistically significant differences between Cellulose and Biopolymer (P < 0.0001), Cellulose and Jute (P < 0.01), and Cellulose and Plastic (P < 0.0001).
+
+```{r richness plot}
+bt_barplot( "richness")+ labs(x = "Material", y="Richness")
+```
+
+####Diversity Indices and Evenness
+
+There were no statistically significant differences across bag types and sampling date using Simpson’s diversity index (P > 0.05)  and Shannon’s index (P > 0.05) (Figure 3). Both indices were examined to account for the influence of dominant species in the leaf packs. To determine if bag materials varied in their affinity for certain taxa (i.e. attracting/excluding organisms of specific functional groups), we also tested Shannon Evenness.  ANOVA testing of Shannon Evenness by bag type resulted in marginally insignificant results (0.05 < P < 0.07) (Figure 4). These data can be found in Table 3. 
+
+```{rshannon and simpson plots, fig.show="hold", out.width="50%"}
+bt_barplot( "shannon")+ labs(x = "Material", y= "Shannon Diversity")
+bt_barplot( "simpson")+ labs(x = "Material",y= "Simpson Diversity")
+```
+
+```{r inverse simpson and shannon evenness plots}
+bt_barplot( "invsimp")+ labs(x = "Material",y= "Inverse-Simpson Diversity")
+bt_barplot("even")+ labs(x = "Material",y= "Shannon Evenness")
+```
+
 
 ##Discussion
 
