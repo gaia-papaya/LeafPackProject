@@ -45,18 +45,17 @@ water_quality <- wq %>%
   pivot_longer(cols = ends_with("_Flow"), values_to = "Flow",names_to = "rn_Flow") %>%
   select(!starts_with("rn_"))
 
-#NOTE TO SELF: stop calling across w/o argumetns or you might break your code!!!
-#summary statsitics table grouped by site
+#summary statistics table grouped by site
 wq_site_summary <- water_quality %>%
   group_by(site) %>%
   mutate(across(everything(), .fns = ~sd(., na.rm = T)/n(), .names = "{.col}_se")) %>%
   summarise(across( .fns = ~mean(., na.rm = TRUE)))
 
-#summary statsitics table grouped by site and date
+#summary statistics table grouped by site and date
 wq_full_summary <- water_quality %>%
   group_by(site, date) %>%
-  mutate(across(.fns = ~sd(., na.rm = T)/n(), .names = "{.col}_se")) %>%
-  summarise(across( .fns = ~mean(., na.rm = TRUE)))
+  mutate(across(everything(), .fns = ~sd(., na.rm = T)/n(), .names = "{.col}_se")) %>%
+  summarise(across(everything(), .fns = ~mean(., na.rm = TRUE)))
 
 #list of water quality objects
 wq_list <- list(raw_water_quality = water_quality,

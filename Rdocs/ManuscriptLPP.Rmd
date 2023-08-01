@@ -94,6 +94,15 @@ wq_ts_BySite <- function(param){
 }
 ```
 
+```{r pre-requisite scripts, echo=FALSE}
+#source data processor scripts----
+source("Rscripts/biodiversity.R")#script to process biodiversity data
+source("Rscripts/water_quality.R")#script to process water quality data
+source("Rscripts/statistics.R") #script to analyze previously loaded data
+source("Rscripts/plot_source.R") #source code for custom plotting functions
+
+```
+
 ##Abstract
 
 1. The traditional method of sampling aquatic systems utilizes plastic mesh leaf packs. Studies of amphibian and macroinvertebrate diversity, genetics, leaf degradation rates and bacterial colonization often utilize plastic mesh leaf packs within investigations. Due to factors such as inclement weather, debris accumulation, human error and symptoms of “urban stream syndrome”, these versatile packs with widespread usage are lost and contribute to large-scale pollution within aquatic systems. The presence of plastics in the Bronx River represents a threat to the organisms within the river system, with recent research suggesting the presence of twice as many microplastic particles as plankton at the mouth of the Bronx River. 
@@ -131,7 +140,8 @@ Materials were selected according to their potential durability and lifespan, co
 During each sampling interval, each bag was anchored to exposed roots, submerged organic debris, trees or human constructed objects at the three sites in the river (Upstream, Midstream, and Downstream) using bricks and nylon cord. To account for seasonal changes in river depth, a generous amount of nylon was used to secure the bag to a brick which was then attached to submerged anthropogenic debris such as old pipes and human constructed structures, large exposed roots, or submerged organic debris like the fallen trunks of trees. The distance between the bag and the brick was minimized to stabilize the bag and reduce stress on the anchor knot. To allow for colonization by bacteria and invertebrates, bags remained submerged for four weeks (Stroud Water Research Center).
 
 ```{r materials table}
-
+readxl::read_xlsx("Rfigs/summaryFigures.xlsx", sheet = 1) %>%
+knitr::kable(caption = "Table 1: Cost and Mesh Size By Material")
 ```
 
 
@@ -149,23 +159,16 @@ Water quality parameters were recorded at each site during both the submerging a
 ###Data Analyses
 All data analyses were performed using R, version 4.1.2 (R core team, 2021), and the vegan package was used to compute diversity indices (Oksanen et al. 2022)
 
-
-
-
-```{r pre-requisite scripts, eval =FALSE}
-#source data processor scripts----
-source("Rscripts/biodiversity.R")#script to process biodiversity data
-source("Rscripts/water_quality.R")#script to process water quality data
-source("Rscripts/statistics.R") #script to analyze previously loaded data
-source("Rscripts/plot_source.R") #source code for custom plotting functions
-
-```
-
 ##Results
 
 ###Water Quality
 
-```{r wq plots}
+```{r wq table}
+readxl::read_xlsx("Rfigs/summaryFigures.xlsx", sheet = 2) %>%
+knitr::kable(caption = "Table 2: Water quality parameters averaged over the course of the sampling period")
+```
+
+```{r wq plots, eval=FALSE}
 #water quality dot plots
 #water quality by date on the y and site as color
 wq_ts_BySite("P")
