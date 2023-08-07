@@ -82,3 +82,270 @@ wq_ts_BySite <- function(param){
     theme_rafa(base_size = 15) +
     scale_color_viridis_d(begin = 0.1, end = 0.9)
 }
+
+
+
+#BRAY CURTIS
+#trying to read in leaf pack paper from google sheet but downloaded as a csv to more quickly obtain a qorkable data table for r analysis
+
+
+
+getwd()
+setwd("/Users/reb/Desktop/ARE/LeafPackProject/Rdata")
+lpp<-read.csv("LPP.csv")
+#it worked but i have to put it in quotes
+
+#going to filter the lpp data frame so that it only has value from downstream and upstream
+
+#DU<-
+
+?mutate
+
+#creating data frame of lpp that will be mutated and chopped up
+Dstream<-lpp[lpp$site=="D", ]
+#this is all the data for sites with downstream trait
+
+Ustream<-lpp[lpp$site=="U",]
+#for upstream
+
+Mstream<-lpp[lpp$site=="M",]
+
+#so i have them seperated so now i can try to do the stat i want which is... i guess bray curtis but i need to have each table converted to be a sum of each organism so maybe i need to do column sums?
+
+
+#dropping the non numeric columns that I dont need
+
+MS<-subset(Mstream, select = -c(material,date ,bag_quality, site ,n_tol_taxa,n_ss_taxa, richness, n_s_taxa))
+
+US<-subset(Ustream, select = -c(material,date ,bag_quality, site ,n_tol_taxa,n_ss_taxa, richness, n_s_taxa))
+
+DS<-subset(Dstream, select = -c(material,date ,bag_quality, site ,n_tol_taxa,n_ss_taxa, richness, n_s_taxa))
+
+
+#creating new data frame with the species totals for each column 
+#proboem is i think i need to pivot the table so that the species names are columns instead of rows
+DSUMS<-as.data.frame(colSums(DS))
+
+#this switches the columns and rows
+DSUMS2<-as.data.frame(t(DSUMS))
+
+
+#now for midstream
+
+MSUMS<-as.data.frame(colSums(MS))
+
+MSUMS2<-as.data.frame(t(MSUMS))
+
+
+#now for upstream
+
+USUMS<-as.data.frame(colSums(US))
+
+USUMS2<-as.data.frame(t(USUMS))
+
+#Now maybe i should combine them again into a superset? or maybe i can break them down for their comparisons during the bray curtis
+
+Superset<-rbind(USUMS2, MSUMS2,DSUMS2)
+
+#First will be the Upstream Midstream comparison
+
+UMSET<-rbind(USUMS2,MSUMS2)
+
+#next will be upstream and downstream
+UDSET<-rbind(USUMS2, DSUMS2)
+
+#next will be midstream and downstream set
+MDSET<-rbind(MSUMS2,DSUMS2)
+
+
+#this does the bray curtis score for this comparison of Up and midstream
+bcUM<-sum(apply(UMSET,2, function(x) abs(max(x)-min(x))))/sum(rowSums(UMSET))
+
+#this will do the bray curtis score for upstream and downstream
+
+bcUD<-sum(apply(UDSET,2, function(x)abs(max(x)-min(x))))/sum(rowSums(UDSET))
+
+#this will do the bray curtis score for midtsream and downstream
+bcMD<-sum(apply(MDSET,2, function(x)abs(max(x)-min(x))))/sum(rowSums(MDSET))
+
+#here are my results
+#now to interpret
+
+BRAYCURTIS<-as.data.frame(rbind(bcUM,bcUD,bcMD))
+#the scale is from 0 to 1 where a zero means the 2 sites are basically the same
+#this can be seen as a percent so a bcd score of .09 is 9% 
+#to get similarity subtract 1-x to get the similarity 
+#so a bcd of .09 is a bcs of 91%
+
+
+BRAYCURTIS
+
+
+
+
+
+
+#if we treat each bag type as a seperate site
+#we can do bray curtis like above to see similarity between our best preforming bag types
+#lets give it a shot
+#creating data frame of lpp that will be mutated and chopped up
+Plastic<-lpp[lpp$material=="Plastic", ]
+#this is all the data for sites with plastic
+
+Biop<-lpp[lpp$material=="Biopolymer",]
+#for biopolymer
+
+Jute<-lpp[lpp$material=="Jute",]
+#for jute
+
+#for cotton
+
+Cotton<-lpp[lpp$material=="Cotton",]
+
+
+
+#for cellulos
+Cellulose<-lpp[lpp$material=="Cellulose ",]
+
+
+#now to filter out the shit i dont need
+Pl<-subset(Plastic, select = -c(material,date ,bag_quality, site ,n_tol_taxa,n_ss_taxa, richness, n_s_taxa))
+
+B<-subset(Biop, select = -c(material,date ,bag_quality, site ,n_tol_taxa,n_ss_taxa, richness, n_s_taxa))
+
+J<-subset(Jute, select = -c(material,date ,bag_quality, site ,n_tol_taxa,n_ss_taxa, richness, n_s_taxa))
+
+
+Cot<-subset(Cotton, select = -c(material,date ,bag_quality, site ,n_tol_taxa,n_ss_taxa, richness, n_s_taxa))
+
+Cell<-subset(Cellulose, select = -c(material,date ,bag_quality, site ,n_tol_taxa,n_ss_taxa, richness, n_s_taxa))
+
+
+
+
+
+
+
+
+#now to do the sums
+
+#PLASTIC
+#creating new data frame with the species totals for each column 
+#proboem is i think i need to pivot the table so that the species names are columns instead of rows
+PLSUMS<-as.data.frame(colSums(Pl))
+
+#this switches the columns and rows
+PL2<-as.data.frame(t(PLSUMS))
+
+
+#BIOPOLYMER
+BIOSUMS<-as.data.frame(colSums(B))
+
+B2<-as.data.frame(t(BIOSUMS))
+
+
+
+#JUTE
+JSUMS<-as.data.frame(colSums(J))
+
+J2<-as.data.frame(t(JSUMS))
+
+
+
+#Cotton
+COTSUMS<-as.data.frame(colSums(Cot))
+
+Cot2<-as.data.frame(t(COTSUMS))
+
+
+
+#Cellulose
+
+CELLSUMS<-as.data.frame(colSums(Cell))
+
+CELL2<-as.data.frame(t(CELLSUMS))
+
+
+
+
+
+
+
+
+#NOW FOR THE COMPARISONS using rbind
+#need
+
+#Plastic Bio
+PB<-rbind(PL2,B2)
+
+#Plastic Jute
+PJ<-rbind(PL2,J2)
+
+#Plastic Cell
+PCELL<-rbind(PL2,CELL2)
+
+#Plastic Cotton
+PCOT<-rbind(PL2, Cot2)
+
+
+
+
+
+
+
+#now for brayc curtis!!!!!
+
+#PLASTIC + BIOPOLYMER
+bcPB<-sum(apply(PB,2, function(x) abs(max(x)-min(x))))/sum(rowSums(PB))
+
+
+#PLASTIC +JUTE
+bcPJ<-sum(apply(PJ,2, function(x) abs(max(x)-min(x))))/sum(rowSums(PJ))
+
+
+
+
+#Plastic+Cellulose
+
+bcPCELL<-sum(apply(PCELL,2, function(x) abs(max(x)-min(x))))/sum(rowSums(PCELL))
+
+#PLASTIC+COTTON
+
+bcPCOT<-sum(apply(PCOT,2, function(x) abs(max(x)-min(x))))/sum(rowSums(PCOT))
+
+
+
+
+BRAYCURTIS2<-as.data.frame(rbind(bcPB,bcPJ,bcPCELL,bcPCOT))
+BRAYCURTIS2
+```
+
+```{r}
+
+bcPB
+0.1369451
+bcPJ
+0.3158981
+bcPCELL
+0.5930298
+bcPCOT
+0.3437648
+
+
+T<-BRAYCURTIS2
+str(T)
+
+TT<-setNames(cbind(rownames(T), T, row.names = NULL), 
+             c("Comparison", "BC_Score"))
+
+
+
+
+plot<-ggplot(TT, aes(x=TT$Comparison, y=TT$BC_Score)) + 
+  geom_bar(stat = "identity")+
+  labs(y="Bray Curtis Dissimilarity Score", x="Comparison", title="Plot of Bray Curtis Dissimilarity Scores by Comparison Type")
+
+plot+ ylim(0,1)
+```
+
+

@@ -1,0 +1,58 @@
+material, date,bag_quality,site,MidgeFlies,BlackFlies,Planaria,Leeches,LeftHandedSnails,AquaticWorms,Amphipods,CraneFlies,Sowbugs,NetSpinningCaddisflies,ClamsMussels,Crayfish,Damselflies,Stoneflies,Mayflies,RiffleBeetles,RightHandedSnails,n_tol_taxa,n_ss_taxa,n_s_taxa,richness
+Biopolymer,11/4/2022,Perfect Condition (5/5),D,3,0,3,0,13,2,112,0,4,0,0,0,0,0,2,0,0,4,2,1,7
+Biopolymer,12/4/2022,Perfect Condition (5/5),D,0,0,1,4,13,2,191,0,27,0,0,0,0,2,0,0,2,4,2,2,8
+Cellulose (Treated),11/4/2022,Major Damage (2/5),D,0,0,0,0,2,1,48,0,3,0,0,0,0,0,0,0,0,2,2,0,4
+Cellulose ,11/4/2022,Fully Disintergrated (1/5),D,0,0,0,0,11,0,11,0,6,0,0,0,0,0,0,0,0,1,2,0,3
+Cotton,11/4/2022,Major Damage (2/5),D,12,0,0,0,23,1,71,0,11,0,0,0,0,0,0,0,6,3,2,1,6
+Jute,11/4/2022,Good Condition (4/5),D,0,0,0,0,5,5,133,0,11,0,0,0,0,1,2,0,0,2,2,2,6
+Jute,12/4/2022,Major Damage (2/5),D,1,0,0,5,22,2,60,0,1,1,0,0,0,0,1,0,2,4,2,2,8
+Plastic,11/4/2022,Perfect Condition (5/5),D,0,0,1,0,2,1,121,0,13,0,0,0,0,2,0,0,0,3,2,1,6
+Plastic,12/4/2022,Perfect Condition (5/5),D,3,0,2,0,6,9,124,0,13,0,2,0,0,0,0,0,3,4,3,1,8
+Cotton,3/26/2023,Perfect Condition (5/5),D,3,0,0,1,0,66,7,0,0,0,1,0,0,0,0,0,0,3,2,0,5
+Plastic,3/26/2023,Perfect Condition (5/5),D,136,3,0,0,0,0,53,0,0,0,0,0,0,0,0,0,1,2,1,1,4
+Cellulose ,3/26/2023,Perfect Condition (5/5),D,5,0,0,0,0,37,7,0,1,0,0,0,0,0,0,0,1,2,2,1,5
+Jute,3/26/2023,Perfect Condition (5/5),D,7,0,0,0,0,0,20,0,5,0,0,0,0,0,0,0,1,1,4,1,6
+Biopolymer,3/26/2023,Perfect Condition (5/5),D,34,0,3,0,0,3,94,0,2,1,0,0,0,0,0,0,3,3,3,1,7
+Cotton,4/16/2023,Good Condition (4/5),D,13,0,1,1,1,368,7,0,0,0,9,0,0,0,0,0,0,5,2,0,7
+Jute,4/16/2023,Minor Damage(3/5),D,0,0,0,0,2,3,6,0,2,0,0,0,0,0,0,0,0,2,2,0,4
+Cellulose ,4/16/2023,Minor Damage(3/5),D,3,0,0,2,0,141,3,0,0,0,19,0,1,0,0,0,0,3,3,0,6
+Biopolymer,4/16/2023,Perfect Condition (5/5),D,1,0,0,1,1,270,13,0,5,0,0,0,0,0,0,0,0,4,2,0,6
+Plastic,4/16/2023,Perfect Condition (5/5),D,3,0,3,6,0,220,30,0,8,0,2,0,0,0,0,0,0,4,3,0,7
+Biopolymer,11/4/2022,Perfect Condition (5/5),M,0,0,0,0,9,0,327,0,0,0,0,0,0,0,1,0,9,1,1,2,4
+Cellulose (Treated),11/4/2022,Fully Disintergrated (1/5),M,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Cellulose ,11/4/2022,Fully Disintergrated (1/5),M,3,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,0,2
+Cotton,11/4/2022,Fully Disintergrated (1/5),M,3,0,0,0,4,0,24,0,1,0,0,0,0,0,0,0,1,2,2,1,5
+Jute,11/4/2022,Minor Damage(3/5),M,0,0,1,0,25,5,206,0,7,0,0,0,0,2,1,2,2,3,2,4,9
+Plastic,11/4/2022,Perfect Condition (5/5),M,0,0,1,0,14,18,260,0,5,0,0,0,0,0,4,0,0,3,2,1,6
+Cellulose ,3/26/2023,Perfect Condition (5/5),M,6,0,0,0,1,89,18,0,0,0,0,0,0,0,0,0,0,3,1,0,4
+Biopolymer,3/26/2023,Perfect Condition (5/5),M,0,0,1,0,0,1,55,0,0,0,0,0,0,0,0,0,0,2,1,0,3
+Jute,3/26/2023,Perfect Condition (5/5),M,37,0,0,0,3,8,147,0,3,0,0,0,0,0,1,0,0,3,2,1,6
+Plastic,3/26/2023,Perfect Condition (5/5),M,11,0,0,14,0,129,128,0,11,0,12,0,0,1,0,0,11,3,3,2,8
+Cotton,3/26/2023,Perfect Condition (5/5),M,28,0,1,0,0,72,67,0,2,0,0,0,0,0,0,0,0,3,2,0,5
+Biopolymer,12/4/2022,Perfect Condition (5/5),M,5,0,2,6,19,5,261,0,22,3,1,0,0,0,0,0,0,5,4,0,9
+Jute,12/4/2022,Minor Damage(3/5),M,0,0,1,4,0,8,21,0,0,5,0,0,0,0,1,0,0,3,2,1,6
+Plastic,12/4/2022,Perfect Condition (5/5),M,3,0,0,0,10,1,133,0,5,0,0,0,0,0,1,0,0,3,2,1,6
+Cotton,4/16/2023,Good Condition (4/5),M,0,0,0,0,0,33,2,0,5,0,0,0,0,0,0,0,0,1,2,0,3
+Jute,4/16/2023,Good Condition (4/5),M,0,0,1,2,4,178,79,0,3,0,0,0,2,0,0,0,0,4,3,0,7
+Cellulose ,4/16/2023,Minor Damage(3/5),M,1,0,0,0,0,305,5,0,0,0,0,0,0,0,0,0,0,2,1,0,3
+Biopolymer,4/16/2023,Perfect Condition (5/5),M,11,0,2,9,3,191,63,0,12,1,0,0,1,0,0,1,0,5,4,1,10
+Plastic,4/16/2023,Perfect Condition (5/5),M,2,0,0,0,7,275,21,0,10,1,1,0,1,0,0,0,0,3,5,0,8
+Biopolymer,11/4/2022,Perfect Condition (5/5),U,0,0,11,1,0,1,48,0,5,0,0,0,0,0,1,0,0,3,2,1,6
+Biopolymer,12/4/2022,Perfect Condition (5/5),U,5,0,2,8,11,7,75,0,22,2,0,0,0,0,0,0,1,5,3,1,9
+Cellulose (Treated),11/4/2022,Fully Disintergrated (1/5),U,0,0,1,0,0,1,11,0,8,0,0,0,0,0,1,0,1,2,2,2,6
+Cellulose ,11/4/2022,Fully Disintergrated (1/5),U,0,0,0,0,0,1,12,0,8,0,0,0,0,0,0,0,0,1,2,0,3
+Cotton,11/4/2022,Major Damage (2/5),U,0,0,0,0,6,0,11,0,1,0,0,0,0,0,0,0,0,1,2,0,3
+Jute,11/4/2022,Minor Damage(3/5),U,1,0,11,0,0,4,53,0,5,0,2,0,0,3,0,0,0,3,2,1,6
+Jute,12/4/2022,NA,U,0,0,0,3,5,12,18,2,0,0,2,0,0,0,1,0,0,3,3,1,7
+Plastic,11/4/2022,Perfect Condition (5/5),U,0,0,8,0,1,2,74,0,7,0,0,0,0,0,1,0,3,3,2,2,7
+Plastic,12/4/2022,Perfect Condition (5/5),U,20,0,1,1,4,3,60,0,8,2,0,0,0,0,0,0,0,5,3,0,8
+Biopolymer,3/26/2023,Perfect Condition (5/5),U,40,1,1,0,0,85,91,0,1,1,1,0,0,1,0,0,1,4,4,1,9
+Jute,3/26/2023,Perfect Condition (5/5),U,20,2,1,0,0,122,146,0,0,0,12,0,0,0,2,0,2,4,2,2,8
+Plastic,3/26/2023,Perfect Condition (5/5),U,95,1,0,5,3,84,171,0,6,0,12,0,1,0,0,0,0,4,3,1,9
+Cellulose ,3/26/2023,Perfect Condition (5/5),U,2,0,0,0,0,12,12,0,0,0,0,0,0,0,0,0,0,2,1,0,3
+Cotton,3/26/2023,Perfect Condition (5/5),U,29,0,0,0,0,49,4,0,1,0,0,0,1,1,0,0,0,2,3,1,6
+Cotton,4/16/2023,Good Condition (4/5),U,11,0,0,5,1,386,21,0,9,0,3,0,0,0,0,0,0,4,3,0,7
+Jute,4/16/2023,Good Condition (4/5),U,0,0,0,6,0,5,22,5,0,0,0,1,0,0,0,0,0,2,2,0,4
+Cellulose,4/16/2023,Good Condition (4/5),U,0,0,0,0,0,119,15,0,3,0,0,0,0,0,0,0,0,1,2,0,3
+Biopolymer,4/16/2023,Perfect Condition (5/5),U,2,0,0,14,1,141,51,0,8,0,7,0,2,0,0,0,0,4,4,0,8
+Plastic,4/16/2023,Perfect Condition (5/5),U,0,0,0,7,4,300,78,0,8,0,7,0,0,0,0,0,0,2,3,1,7
