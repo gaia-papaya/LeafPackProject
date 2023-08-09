@@ -105,7 +105,7 @@ arrange(desc(site)) %>%
 write_csv( file = "Rdata/wq_summary_by site.csv")
 
 
-corrplot(taxaCount_PCA$rotation[,1:3])
+corrplot(taxaCount_PCA$rotation)
 
 #NMDS
 set.seed(420)

@@ -195,6 +195,9 @@ ANOVA testing of water quality parameters showed statistically significant diffe
 ggpairs(select(bd_list$biodiversity, MidgeFlies:Planaria))
 
 #PCA plot:----
+#prin comp correl plot for all components
+corrplot(taxaCount_PCA$rotation)
+
 #dotplot between pc1 and pc2, with % explained variance annotated in axis labels
 ggplot(data = LPP_FullData, aes(x = PC1, y = PC2, fill = material)) +
   geom_point(shape = 21, size = 2.5) + 
