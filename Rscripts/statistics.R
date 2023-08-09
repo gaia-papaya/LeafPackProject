@@ -8,7 +8,8 @@ require(tidyverse)
 joined <- right_join(x = wq_list$summ_water_quality, y = bd_list$biodiversity, by = c("date", "site"), multiple = "all")
 
 #principal component analysis:
-taxaCount_PCA <- prcomp(as.matrix(select(bd_list$biodiversity, MidgeFlies:RightHandedSnails)))
+taxaCount_PCA <- prcomp(as.matrix(select(bd_list$biodiversity, MidgeFlies:RightHandedSnails)),
+                        scale. = T)
 #merge PCAs with rest of data to create full dataset
 LPP_FullData <- tibble(joined, #main dataset
                        select(as.tibble(taxaCount_PCA$x), PC1,PC2,PC3))
@@ -90,7 +91,7 @@ for(t in 1:length(wq_tests)){
 cor.test(LPP_FullData$bag_quality, LPP_FullData$richness)
 
 #muin::dredge for model selection
-#correl plot
+# bag quality  & richness correl plot
 ggplot(filter(LPP_FullData, is.na(material) == FALSE), aes(x = bag_quality*5, y = richness)) +
   geom_point(aes(color = material)) + geom_smooth(method = "lm", se = F, color = 'black')+
   theme_bw() + theme_rafa(base_size = 15) +
@@ -98,7 +99,7 @@ ggplot(filter(LPP_FullData, is.na(material) == FALSE), aes(x = bag_quality*5, y 
        title="Correlation Between Richness and Bag Quality Score ",
      caption =  "Pearson's r: 0.4212087 (P <0.01)")
 
-#output csv
+#output csv for writing kables
 wq_list$site_summ_wq %>%
 arrange(desc(site)) %>%
 write_csv( file = "Rdata/wq_summary_by site.csv")
@@ -106,11 +107,6 @@ write_csv( file = "Rdata/wq_summary_by site.csv")
 
 corrplot(taxaCount_PCA$rotation[,1:3])
 
-ggplot(LPP_FullData, aes(x = PC1, y = PC2, fill = material)) +
-  geom_point(shape = 21) +
-  facet_wrap(~date) +
-  scale_fill_viridis_d()
-
 #NMDS
-#set.seed(420)
-#NMDS_LPP <- vegan::metaMDS(select(bd_list$biodiversity, MidgeFlies:RightHandedSnails))
+set.seed(420)
+NMDS_LPP <- vegan::metaMDS(select(bd_list$biodiversity, MidgeFlies:RightHandedSnails))

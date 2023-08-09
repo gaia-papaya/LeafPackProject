@@ -201,7 +201,7 @@ ggplot(data = LPP_FullData, aes(x = PC1, y = PC2, fill = material)) +
 geom_abline(slope = 0, intercept = 0, linetype = 2) +
   geom_vline(xintercept = 0, linetype = 2) +
   
-  #thematics
+#thematics
   scale_fill_viridis_d(begin = 0.1, end = 0.9, option = "G") +
   theme_rafa(base_size = 16)
 
