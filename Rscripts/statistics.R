@@ -33,17 +33,17 @@ diversity_mod_objects <- list(#taxa wide anova model objects
                               pre_shannon = aov(predator_shannon ~ material + as.factor(date)   , data = LPP_FullData),
                               shr_shannon = aov(shredder_shannon ~ material + as.factor(date)   , data = LPP_FullData))
                 
-#Type two anova list using car::Anova function 
+#Type two anova list using car::car::Anova function 
 diversity_tests <- diversity_mod_objects %>%
-  {list(shannon = Anova(.$shannon),
-        simpson = Anova(.$simpson),
-        invsimp = Anova(.$invsimp),
-        eveneness = Anova(.$evenness),
-        richness = Anova(.$richness),
-        coll_shannon = Anova(.$coll_shannon),
-        scr_shannon = Anova(.$scr_shannon),
-        pre_shannon = Anova(.$pre_shannon),
-        shr_shannon = Anova(.$shr_shannon))}
+  {list(shannon = car::Anova(.$shannon),
+        simpson = car::Anova(.$simpson),
+        invsimp = car::Anova(.$invsimp),
+        eveneness = car::Anova(.$evenness),
+        richness = car::Anova(.$richness),
+        coll_shannon = car::Anova(.$coll_shannon),
+        scr_shannon = car::Anova(.$scr_shannon),
+        pre_shannon = car::Anova(.$pre_shannon),
+        shr_shannon = car::Anova(.$shr_shannon))}
 
 #if the p values are below 95% confidence threshhold, perform tukey tests on them
 diversity_tukeys <- list()
