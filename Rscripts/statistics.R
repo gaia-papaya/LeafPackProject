@@ -8,6 +8,10 @@ require(tidyverse)
 joined <- right_join(x = wq_list$summ_water_quality, y = bd_list$biodiversity, by = c("date", "site"), multiple = "all")
 
 #principal component analysis:
+taxa_ct_NMDS <- bd_list$biodiversity %>%
+  mutate(across(MidgeFlies:RightHandedSnails, ~log(.x + 1))) %>%
+  select(MidgeFlies:RightHandedSnails) %>%
+  prcomp(as.matrix(.), scale. = T)
 taxaCount_PCA <- prcomp(as.matrix(select(bd_list$biodiversity, MidgeFlies:RightHandedSnails)),
                         scale. = T)
 #merge PCAs with rest of data to create full dataset
@@ -44,13 +48,9 @@ diversity_tests <- diversity_mod_objects %>%
 #if the p values are below 95% confidence threshhold, perform tukey tests on them
 diversity_tukeys <- list()
 for(t in 1:length(diversity_tests)){
-  if(any(diversity_tests[[t]]$`Pr(>F)` < 0.05, na.rm = T) == TRUE)
-  {cat(names(diversity_tests[t]), "has P values below 0.05 threshhold, conducting tukey test", sep = " ")
-    diversity_tukeys[[t]] <- TukeyHSD(diversity_mod_objects[[t]])
+    diversity_tukeys[[t]] <- agricolae::HSD.test(diversity_mod_objects[[t]], "material", group = T)
     names(diversity_tukeys)[t] <- names(diversity_tests)[[t]]
-  }
-  #remove NA elements of tukey list
-  diversity_tukeys <- compact(diversity_tukeys)
+  
 }
 #WATER QUALITY----
 #wq model objects
@@ -93,8 +93,10 @@ cor.test(LPP_FullData$bag_quality, LPP_FullData$richness)
 #muin::dredge for model selection
 # bag quality  & richness correl plot
 ggplot(filter(LPP_FullData, is.na(material) == FALSE), aes(x = bag_quality*5, y = richness)) +
-  geom_point(aes(color = material)) + geom_smooth(method = "lm", se = F, color = 'black')+
-  theme_bw() + theme_rafa(base_size = 15) +
+  geom_jitter(aes(fill = material), shape =21) + 
+  scale_fill_viridis_d()+
+  theme_bw() +
+  theme_rafa(base_size = 16) +
   labs(x="Bag Quality Score", y="Richness",
        title="Correlation Between Richness and Bag Quality Score ",
      caption =  "Pearson's r: 0.4212087 (P <0.01)")

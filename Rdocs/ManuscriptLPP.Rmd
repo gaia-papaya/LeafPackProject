@@ -7,6 +7,15 @@ output: word_document
 bibliography: references.bib
 ---
 
+```{r pre-requisite scripts, echo=FALSE}
+#source data processor scripts----
+source("Rscripts/biodiversity.R")#script to process biodiversity data
+source("Rscripts/water_quality.R")#script to process water quality data
+source("Rscripts/statistics.R") #script to analyze previously loaded data
+source("Rscripts/plot_source.R") #source code for custom plotting functions
+
+```
+
 ```{r setup, include=FALSE}
 #knitr options----
 knitr::opts_chunk$set(echo = TRUE)
@@ -54,8 +63,9 @@ theme_rafa <- function(base_size = 12){
 #bag type barplot function:
 #PARAMS: 
   #index(string): a string specifying the desired index
-
 bt_barplot <- function(index){
+  #save index as character
+  char_index <- index
   #calculate mean and standard error of chosen index
   new_tbl <- LPP_FullData%>%
   filter(is.na(material) == FALSE)%>% #remove na values from material before calculations
@@ -66,9 +76,10 @@ bt_barplot <- function(index){
   ggplot(new_tbl, aes(x = reorder(material, -index, sum), y = index)) +
     geom_col(aes(fill = reorder(material, -index, sum))) +
     geom_errorbar(aes(ymin = index - 2*index_se, ymax = index + 2*index_se)) +
+   # geom_text(aes(x = material, y = 0.5 + index, label = diversity_tukeys$char_index$groups$groups)) +
     
     theme_bw() +
-    scale_fill_viridis_d(begin = 0.1, end = 0.9)+
+    scale_fill_viridis_d()+
     theme_rafa(base_size = 15) +
     theme(axis.text.x = element_text(angle = -15, vjust = 0.5))+
     labs(x = "material", title = "Diversity Index by Bag material", y = paste(index),
@@ -94,14 +105,7 @@ wq_ts_BySite <- function(param){
 }
 ```
 
-```{r pre-requisite scripts, echo=FALSE}
-#source data processor scripts----
-source("Rscripts/biodiversity.R")#script to process biodiversity data
-source("Rscripts/water_quality.R")#script to process water quality data
-source("Rscripts/statistics.R") #script to analyze previously loaded data
-source("Rscripts/plot_source.R") #source code for custom plotting functions
 
-```
 
 ##Abstract
 
@@ -196,20 +200,24 @@ ggpairs(select(bd_list$biodiversity, MidgeFlies:Planaria))
 
 #PCA plot:----
 #prin comp correl plot for all components
-corrplot(taxaCount_PCA$rotation)
+corrplot(taxa_ct_PCA$rotation)
 
 #dotplot between pc1 and pc2, with % explained variance annotated in axis labels
 ggplot(data = LPP_FullData, aes(x = PC1, y = PC2, fill = material)) +
   geom_point(shape = 21, size = 2.5) + 
 geom_abline(slope = 0, intercept = 0, linetype = 2) +
   geom_vline(xintercept = 0, linetype = 2) +
+  facet_wrap(~date) +
   
 #thematics
   scale_fill_viridis_d(begin = 0.1, end = 0.9, option = "G") +
   theme_rafa(base_size = 16)
 
 #screeplot----
-fviz_eig(taxaCount_PCA) + theme_rafa(base_size = 16)
+fviz_eig(taxa_ct_PCA) + theme_rafa(base_size = 16)
+
+ggplot(LPP_FullData, aes(x = sqrt(MidgeFlies))) +
+  geom_histogram()
 ```
 
 ###Leaf Pack Efficiency
