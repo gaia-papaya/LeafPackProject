@@ -1,8 +1,7 @@
 #join diversity data and water quality data together
-joined <- right_join(x = wq_list$summ_water_quality, y = bd_list$biodiversity, by = c("date", "site"), multiple = "all")
+LPP_FullData <- right_join(x = wq_list$summ_water_quality, y = bd_list$biodiversity, by = c("date", "site"), multiple = "all")
 
-#statistical analyses----
-#DIVERSITY
+#DIVERSITY MODELS----
 #FORMULA: INDEX ~ MATERIAL + DATE
 diversity_mod_objects <- list(#taxa wide anova model objects
   shannon = aov(shannon ~ material + as.factor(date) , data = LPP_FullData),
@@ -28,11 +27,52 @@ diversity_tests <- diversity_mod_objects %>%
         pre_shannon = car::Anova(.$pre_shannon),
         shr_shannon = car::Anova(.$shr_shannon))}
 
-#if the p values are below 95% confidence threshhold, perform tukey tests on them
+#if the p values are below 95% confidence threshold, perform Tukey tests on them, else put NA
 diversity_tukeys <- list()
 for(t in 1:length(diversity_tests)){
-  if(diversity_tests[[t]]){}
-  diversity_tukeys[[t]] <- agricolae::HSD.test(diversity_mod_objects[[t]], "material", group = T)
-  names(diversity_tukeys)[t] <- names(diversity_tests)[[t]]
+  if(any(diversity_tests[[t]]$`Pr(>F)`[1:2] < 0.05)){
+    cat(paste(names(diversity_mod_objects[t]), "had significant (<0.05) results.",
+                "\n", "performing Tukey tests...",
+                "\n"))
+    diversity_tukeys[[t]] <- agricolae::HSD.test(diversity_mod_objects[[t]], "material", group = T)
+    names(diversity_tukeys)[t] <- names(diversity_tests)[[t]]
+  } else {
+    diversity_tukeys[[t]] <- NA
+  }
   
 }
+
+#WATER QUALITY MODELS----
+#FORMULA: PARAMETER ~ DATE + SITE
+#wq model objects
+wq_mod_objects <- list(
+  P = aov(P~as.factor(date)+site, data = wq_list$raw_water_quality),
+  pH = aov(pH~as.factor(date)+site, data = wq_list$raw_water_quality),
+  NH3 = aov(NH3~as.factor(date)+site, data = wq_list$raw_water_quality),
+  DO = aov(DO~as.factor(date)+site, data = wq_list$raw_water_quality),
+  Temp = aov(Temp~as.factor(date)+site, data = wq_list$raw_water_quality),
+  Cond = aov(Cond~as.factor(date)+site, data = wq_list$raw_water_quality),
+  Flow = aov(Flow~as.factor(date)+site, data = wq_list$raw_water_quality)
+)
+
+#T2 anova
+wq_tests <- wq_mod_objects %>%
+  {list(
+  P = car::Anova(.$P),
+  pH = car::Anova(.$pH),
+  NH3 = car::Anova(.$NH3),
+  DO = car::Anova(.$DO),
+  Temp = car::Anova(.$Temp),
+  Cond = car::Anova(.$Cond),
+  Flow = car::Anova(.$Flow))
+  }
+
+#set seed for repeatability
+set.seed(420)
+
+#Nonmetric Multidimensional Scaling (NMDS) of Biodiversity data
+taxaCount_NMDS <- LPP_FullData %>%
+  ungroup() %>%
+  select(MidgeFlies:RightHandedSnails) %>%
+vegan::metaMDS(.,distance = "bray", k = 4, plot = T)
+

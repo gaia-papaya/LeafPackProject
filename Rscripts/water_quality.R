@@ -1,13 +1,6 @@
-#dependencies:----
-require(tidyverse)
-
-#README:
-#This script reads the water quality data from the 'Leaf Pack Project' sheet file on google drive @ "https://docs.google.com/spreadsheets/d/1_8Fph2bfNAaMCpI9q8LHModg78G5v4BVoOnJUHY-knE/edit#gid=0"
-#sourced by the controller.R script. 
-
 #data reforamtting----
 #read in sheets file from google drive link
-wq <- read_excel("Rdata/LPP.xlsx",sheet = 2, na = "NA") %>%
+wq <- readxl::read_excel("Rdata/LPP.xlsx",sheet = 2, na = "NA") %>%
   select(!c(d_mean, d_se, m_mean, m_se, u_mean, u_se))%>% #select out calculated columns
   pivot_wider( names_from ="param", values_from = c("d_rep1", "d_rep2", "d_rep3",
                                                     "m_rep1", "m_rep2", "m_rep3",

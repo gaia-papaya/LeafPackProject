@@ -1,26 +1,20 @@
 #dependencies----
-require(readxl)
 require(tidyverse)
-require(vegan)
-
-#README:
-#this script reads the biodiveristy data from the 'Leaf Pack Project' sheet file on google drive @ "https://docs.google.com/spreadsheets/d/1_8Fph2bfNAaMCpI9q8LHModg78G5v4BVoOnJUHY-knE/edit#gid=0"
-#sourced by the controller.R script. 
 
 #data reformatting----
 
 #data reformatting----
 #read in sheets file from google drive link
-bd <- read_excel("Rdata/LPP.xlsx" ,sheet = 1) %>%
+bd <- readxl::read_excel("Rdata/LPP.xlsx" ,sheet = 1) %>%
   filter(material != "Cellulose (Treated)") %>% #exclude Cellulose treated data from dataset
   #reformat site names,attachment style to consistent standard values
   mutate(site = str_remove(site, "-"), 
          site = str_to_lower(site),
          attachment_style = str_to_lower(attachment_style),
          #calculate diversity indices for columns which start with an upper-case letter
-         shannon = diversity(select(., str_which(names(.), "^[:upper:]"))), 
-         simpson =diversity(select(., str_which(names(.), "^[:upper:]")), index = "simpson"),
-         invsimp = diversity(select(., str_which(names(.), "^[:upper:]")), index = "invsimpson"),
+         shannon = vegan::diversity(select(., str_which(names(.), "^[:upper:]"))), 
+         simpson = vegan::diversity(select(., str_which(names(.), "^[:upper:]")), index = "simpson"),
+         invsimp = vegan::diversity(select(., str_which(names(.), "^[:upper:]")), index = "invsimpson"),
          bag_quality = eval(as.numeric(str_extract(bag_quality, "[:digit:]"))/5)) %>% #convert bag quality to numeric
   mutate(even = shannon/log(richness), #calculate shannon evenness
          mesh_size = case_when(material == "Biopolymer" ~ 10,
@@ -47,10 +41,10 @@ bd_matrices <- list(
 
 #add functional group diversity as column
 biodiversity <- bd %>%
-  mutate(collector_shannon = diversity(bd_matrices[["collector_matrix"]]),
-         shredder_shannon = diversity(bd_matrices[["shredder_matrix"]]),
-         scraper_shannon = diversity(bd_matrices[["scraper_matrix"]]),
-         predator_shannon = diversity(bd_matrices[["predator_matrix"]]))
+  mutate(collector_shannon = vegan::diversity(bd_matrices[["collector_matrix"]]),
+         shredder_shannon = vegan::diversity(bd_matrices[["shredder_matrix"]]),
+         scraper_shannon = vegan::diversity(bd_matrices[["scraper_matrix"]]),
+         predator_shannon = vegan::diversity(bd_matrices[["predator_matrix"]]))
 
 #list of biodiversity objects
 bd_list <- list(biodiversity = biodiversity,

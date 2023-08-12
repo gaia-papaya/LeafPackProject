@@ -11,7 +11,7 @@ bibliography: references.bib
 #source data processor scripts----
 source("Rscripts/biodiversity.R")#script to process biodiversity data
 source("Rscripts/water_quality.R")#script to process water quality data
-source("Rscripts/statistics.R") #script to analyze previously loaded data
+source("Rscripts/stats.R") #script to analyze previously loaded data
 source("Rscripts/plot_source.R") #source code for custom plotting functions
 
 ```
