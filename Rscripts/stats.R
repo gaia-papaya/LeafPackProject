@@ -27,18 +27,15 @@ diversity_tests <- diversity_mod_objects %>%
         pre_shannon = car::Anova(.$pre_shannon),
         shr_shannon = car::Anova(.$shr_shannon))}
 
-#if the p values are below 95% confidence threshold, perform Tukey tests on them, else put NA
-diversity_tukeys <- list()
+#perform tukey tests for all indices
 for(t in 1:length(diversity_tests)){
-  if(any(diversity_tests[[t]]$`Pr(>F)`[1:2] < 0.05)){
+  
     cat(paste(names(diversity_mod_objects[t]), "had significant (<0.05) results.",
-                "\n", "performing Tukey tests...",
-                "\n"))
+              "\n", "performing Tukey tests...",
+              "\n"))
     diversity_tukeys[[t]] <- agricolae::HSD.test(diversity_mod_objects[[t]], "material", group = T)
     names(diversity_tukeys)[t] <- names(diversity_tests)[[t]]
-  } else {
-    diversity_tukeys[[t]] <- NA
-  }
+
   
 }
 
@@ -66,6 +63,7 @@ wq_tests <- wq_mod_objects %>%
   Cond = car::Anova(.$Cond),
   Flow = car::Anova(.$Flow))
   }
+
 
 #set seed for repeatability
 set.seed(420)

@@ -2,8 +2,6 @@
 require(tidyverse)
 
 #data reformatting----
-
-#data reformatting----
 #read in sheets file from google drive link
 bd <- readxl::read_excel("Rdata/LPP.xlsx" ,sheet = 1) %>%
   filter(material != "Cellulose (Treated)") %>% #exclude Cellulose treated data from dataset
@@ -45,6 +43,27 @@ biodiversity <- bd %>%
          shredder_shannon = vegan::diversity(bd_matrices[["shredder_matrix"]]),
          scraper_shannon = vegan::diversity(bd_matrices[["scraper_matrix"]]),
          predator_shannon = vegan::diversity(bd_matrices[["predator_matrix"]]))
+
+#Bray Curtis Dissimilarity calculation
+BD_BySite <- bd %>%
+  group_by(site) %>%
+  summarise(across(MidgeFlies:RightHandedSnails, sum)) 
+  BC_BySite <- vegdist(select(BD_BySite, !site)) 
+  BC_BySite_tibble <- tibble(
+    site_comp = c("down-midstream", "down-upstream", "mid-upstream"),
+    bc_score = as.vector(BC_BySite)
+  )
+  
+  
+  BD_ByMat <- bd %>%
+    group_by(material) %>%
+    summarise(across(MidgeFlies:RightHandedSnails, sum)) 
+  BC_ByMat <- vegdist(select(BD_ByMat, !material)) 
+  BC_ByMat_tibble <- tibble(
+    mat_comp = c("Biopolymer-cellulose", "BioPoly-cotton", "Cell-cotton", "Biopoly-Jute", "Cell-jute", "Cotton-Jute", "Biopolymer-Plastic", "Cell-Plastic", "Cotton-Plastic", "Jute-plastic"),
+    bc_score = as.vector(BC_ByMat)
+  )
+  
 
 #list of biodiversity objects
 bd_list <- list(biodiversity = biodiversity,

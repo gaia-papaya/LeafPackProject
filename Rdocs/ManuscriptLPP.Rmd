@@ -63,19 +63,23 @@ theme_rafa <- function(base_size = 12){
 #PARAMS: 
   #index(string): a string specifying the desired index
 bt_barplot <- function(index){
-  #save index as character
-  char_index <- index
+  #tukey tibble
+  groupings_tibble <- diversity_tukeys[[index]]$groups %>%
+rownames_to_column("material")
   #calculate mean and standard error of chosen index
   new_tbl <- LPP_FullData%>%
   filter(is.na(material) == FALSE)%>% #remove na values from material before calculations
     group_by(material) %>% #group by material
     mutate(index_se = sd(get(index), na.rm = T)/sqrt(n())) %>% # calc SE
     summarise(index = mean(get(index), na.rm = T), index_se = mean(index_se)) #summarise into mean
-    
+  #merge two tibbles
+  new_tbl <- inner_join(new_tbl, groupings_tibble, by ="material")
+  
+  #plotting
   ggplot(new_tbl, aes(x = reorder(material, -index, sum), y = index)) +
     geom_col(aes(fill = reorder(material, -index, sum))) +
     geom_errorbar(aes(ymin = index - 2*index_se, ymax = index + 2*index_se)) +
-   # geom_text(aes(x = material, y = 0.5 + index, label = diversity_tukeys$char_index$groups$groups)) +
+geom_text(aes(y = (index + 2*index_se)+0.05, label =groups)) +
     
     theme_bw() +
     scale_fill_viridis_d()+
@@ -229,7 +233,7 @@ This study sampled 9,280 individuals from 17 discrete taxa. Amphipoda (genus Gam
 Taxonomic richness between bag types was statistically significant (P < 0.001, Figure 2). A subsequent Tukey-Kramer test revealed statistically significant differences between Cellulose and Biopolymer (P < 0.0001), Cellulose and Jute (P < 0.01), and Cellulose and Plastic (P < 0.0001).
 
 ```{r richness plot}
-bt_barplot( "richness")+ labs(x = "Material", y="Richness")
+bt_barplot( "richness")+ labs(x = "Material", y="Richness")  
 ```
 
 ####Diversity Indices and Evenness
@@ -245,6 +249,20 @@ bt_barplot( "simpson")+ labs(x = "Material",y= "Simpson Diversity")
 bt_barplot( "invsimp")+ labs(x = "Material",y= "Inverse-Simpson Diversity")
 bt_barplot("even")+ labs(x = "Material",y= "Shannon Evenness")
 ```
+
+```{r}
+ggplot(BC_BySite_tibble, aes(x = site_comp, y = bc_score, fill = site_comp)) +geom_col() +
+  theme_rafa() + coord_cartesian(ylim = c(0, 1)) + scale_fill_viridis_d() +
+  labs(title = "Community Dissimilarity between sites",
+       x = "Site Comparisons", y =" Bray Curtis Dissimilarity", fill = "Comparisons")
+
+ggplot(BC_ByMat_tibble[7:10,], aes(x = mat_comp, y = bc_score, fill = mat_comp)) +geom_col() +
+  theme_rafa() + scale_fill_viridis_d()+
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(title = "Community Dissimilairty between bag types", x = "Material Comparison",
+       y = "Bray Curtis Dissimilarity", fill = "Comparisons")
+```
+
 
 
 ##Discussion
