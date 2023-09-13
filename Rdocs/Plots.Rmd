@@ -1,13 +1,13 @@
 ---
-title: Biodegradable alternatives to plastic mesh bags conventionally used in freshwater
-  macroinvertebrate analysis within the Bronx River, NYC
-author: "R.E. Segui-Baez, G.A. Rueda Moreno, R. Ward, K. Schneider Paolantonio"
-date: "`r Sys.Date()`"
-output: word_document
-bibliography: references.bib
+output:
+  pdf_document: default
+  html_document: default
 ---
 
-```{r pre-requisite scripts, echo=FALSE}
+
+```{r pre-requisite scripts, echo=FALSE, results='hide',message=FALSE,warning=FALSE}
+#set knitr options----
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 #source data processor scripts----
 source("Rscripts/biodiversity.R")#script to process biodiversity data
 source("Rscripts/water_quality.R")#script to process water quality data
@@ -15,9 +15,7 @@ source("Rscripts/stats.R") #script to analyze previously loaded data
 
 ```
 
-```{r setup, include=FALSE}
-#knitr options----
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup,echo=FALSE, results='hide',message=FALSE,warning=FALSE}
 #dependencies----
 require(tidyverse)
 require(GGally)
@@ -85,7 +83,7 @@ geom_text(aes(y = (index + 3*index_se), label =groups)) +
     scale_fill_viridis_d()+
     theme_rafa(base_size = 15) +
     theme(axis.text.x = element_text(angle = -15, vjust = 0.5))+
-    labs(x = "material", title = "Diversity Index by Bag material", y = paste(index),
+    labs(x = "material", title = "Index by Bag material", y = paste(index),
          fill = "material")
 }
 
@@ -110,16 +108,9 @@ wq_ts_BySite <- function(param){
 }
 ```
 
-### Tables
+# Leaf Pack Project Plots
 
-```{r wq table}
-readxl::read_xlsx("Rfigs/summaryFigures.xlsx", sheet = 2) %>%
-knitr::kable(caption = "Table 2: Water quality parameters averaged over the course of the sampling period")
-```
-
-### Plots
-
-```{r wq plots, eval=FALSE}
+```{r wq plots, eval=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
 #water quality dot plots----
 #water quality by date on the y and site as color
 wq_ts_BySite("P") +labs( title = "Phosphorous Seasonality",y = "Phosphorous (mg/L)")
@@ -152,7 +143,7 @@ ggplot(BC_BySite_tibble, aes(x = site_comp, y = bc_score, fill = site_comp)) +ge
 ggplot(BC_ByMat_tibble[7:10,], aes(x = mat_comp, y = bc_score, fill = mat_comp)) +geom_col() +
   theme_rafa() + scale_fill_viridis_d()+
   coord_cartesian(ylim = c(0, 1)) +
-  labs(title = "Community Dissimilarity between plastic and biodegradable bags", x = "Material Comparison",
+  labs(title = "Community Dissimilarity between \n plastic and biodegradable bags", x = "Material Comparison",
        y = "Bray Curtis Dissimilarity", fill = "Comparisons")
 
 #NMDS plots----
@@ -168,7 +159,7 @@ ggplot(TC_NMDS_Scores, aes(x = NMDS1, y = NMDS2, fill = material)) +
   geom_point(shape = 21, size = 2.5) +
   facet_wrap(~date)+
   theme_rafa() +
-  labs(title = "Non-Metric Dimensional Scaling of Community Matrices")+
+  labs(title = "Bray Curtis NMDS of Community Matrices")+
   scale_fill_viridis_d()
 ```
 
