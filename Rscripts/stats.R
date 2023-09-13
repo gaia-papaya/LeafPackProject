@@ -28,6 +28,7 @@ diversity_tests <- diversity_mod_objects %>%
         shr_shannon = car::Anova(.$shr_shannon))}
 
 #perform tukey tests for all indices
+list() -> diversity_tukeys
 for(t in 1:length(diversity_tests)){
   
     cat(paste(names(diversity_mod_objects[t]), "had significant (<0.05) results.",
