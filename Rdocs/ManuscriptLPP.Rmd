@@ -79,7 +79,7 @@ rownames_to_column("material")
   ggplot(new_tbl, aes(x = reorder(material, -index, sum), y = index)) +
     geom_col(aes(fill = reorder(material, -index, sum))) +
     geom_errorbar(aes(ymin = index - 2*index_se, ymax = index + 2*index_se)) +
-geom_text(aes(y = (index + 2*index_se)+0.05, label =groups)) +
+geom_text(aes(y = (index + 3*index_se), label =groups)) +
     
     theme_bw() +
     scale_fill_viridis_d()+
@@ -152,9 +152,24 @@ ggplot(BC_BySite_tibble, aes(x = site_comp, y = bc_score, fill = site_comp)) +ge
 ggplot(BC_ByMat_tibble[7:10,], aes(x = mat_comp, y = bc_score, fill = mat_comp)) +geom_col() +
   theme_rafa() + scale_fill_viridis_d()+
   coord_cartesian(ylim = c(0, 1)) +
-  labs(title = "Community Dissimilairty between bag types", x = "Material Comparison",
+  labs(title = "Community Dissimilarity between plastic and biodegradable bags", x = "Material Comparison",
        y = "Bray Curtis Dissimilarity", fill = "Comparisons")
 
+#NMDS plots----
+#extract scores from NMDS object
+TC_NMDS_Scores <- as_tibble(scores(taxaCount_NMDS, display = "sites"))
+TC_NMDS_Scores$site <- LPP_FullData$site
+TC_NMDS_Scores$date <- LPP_FullData$date
+TC_NMDS_Scores$material <- LPP_FullData$material
+
+#plotting
+ggplot(TC_NMDS_Scores, aes(x = NMDS1, y = NMDS2, fill = material)) +
+  geom_hline(yintercept = 0, linetype = 5) + geom_vline(xintercept = 0, linetype = 5) +
+  geom_point(shape = 21, size = 2.5) +
+  facet_wrap(~date)+
+  theme_rafa() +
+  labs(title = "Non-Metric Dimensional Scaling of Community Matrices")+
+  scale_fill_viridis_d()
 ```
 
 

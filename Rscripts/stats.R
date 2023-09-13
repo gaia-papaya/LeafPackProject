@@ -7,7 +7,7 @@ diversity_mod_objects <- list(#taxa wide anova model objects
   shannon = aov(shannon ~ material + as.factor(date) , data = LPP_FullData),
   simpson = aov(simpson ~ material + as.factor(date) , data = LPP_FullData),
   invsimp = aov(simpson ~ material + as.factor(date) , data = LPP_FullData),
-  evenness = aov(even ~ material + as.factor(date) , data = LPP_FullData),
+  even = aov(even ~ material + as.factor(date) , data = LPP_FullData),
   richness = aov(richness ~ material + as.factor(date), data = LPP_FullData),
   #functional group anova model objects
   coll_shannon = aov(collector_shannon ~ material + as.factor(date)   , data = LPP_FullData),
@@ -20,7 +20,7 @@ diversity_tests <- diversity_mod_objects %>%
   {list(shannon = car::Anova(.$shannon),
         simpson = car::Anova(.$simpson),
         invsimp = car::Anova(.$invsimp),
-        eveneness = car::Anova(.$evenness),
+        even = car::Anova(.$even),
         richness = car::Anova(.$richness),
         coll_shannon = car::Anova(.$coll_shannon),
         scr_shannon = car::Anova(.$scr_shannon),
@@ -73,5 +73,5 @@ set.seed(420)
 taxaCount_NMDS <- LPP_FullData %>%
   ungroup() %>%
   select(MidgeFlies:RightHandedSnails) %>%
-vegan::metaMDS(.,distance = "bray", k = 4, plot = T)
+vegan::metaMDS(.,distance = "bray", k = 3, plot = F)
 
