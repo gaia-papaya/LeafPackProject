@@ -49,7 +49,7 @@ biodiversity <- bd %>%
 BD_BySite <- bd %>%
   group_by(site) %>%
   summarise(across(MidgeFlies:RightHandedSnails, sum)) 
-  BC_BySite <- vegan::vegdist(select(BD_BySite, !site)) 
+BC_BySite <- vegan::vegdist(select(BD_BySite, !site)) 
   BC_BySite_tibble <- tibble(
     site_comp = c("down-midstream", "down-upstream", "mid-upstream"),
     bc_score = as.vector(BC_BySite)

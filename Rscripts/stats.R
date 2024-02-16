@@ -41,31 +41,46 @@ for(t in 1:length(diversity_tests)){
 }
 
 #WATER QUALITY MODELS----
+#normality tests
+wq_norms <- list(P = shapiro.test(wq_list$summ_water_quality$P),
+                 Nitrogen = shapiro.test(wq_list$summ_water_quality$Nitrogen),
+                 pH = shapiro.test(wq_list$summ_water_quality$pH),
+                 NH3 = shapiro.test(wq_list$summ_water_quality$NH3),
+                 DO = shapiro.test(wq_list$summ_water_quality$DO),
+                 Temp = shapiro.test(wq_list$summ_water_quality$Temp),
+                 Cond = shapiro.test(wq_list$summ_water_quality$Cond),
+                 FLow = shapiro.test(wq_list$summ_water_quality$Flow))
+
+
+#ANOVA for parameters which pass shapiro test
 #FORMULA: PARAMETER ~ DATE + SITE
 #wq model objects
-wq_mod_objects <- list(
-  P = aov(P~as.factor(date)+site, data = wq_list$raw_water_quality),
-  pH = aov(pH~as.factor(date)+site, data = wq_list$raw_water_quality),
-  NH3 = aov(NH3~as.factor(date)+site, data = wq_list$raw_water_quality),
-  DO = aov(DO~as.factor(date)+site, data = wq_list$raw_water_quality),
-  Temp = aov(Temp~as.factor(date)+site, data = wq_list$raw_water_quality),
-  Cond = aov(Cond~as.factor(date)+site, data = wq_list$raw_water_quality),
-  Flow = aov(Flow~as.factor(date)+site, data = wq_list$raw_water_quality)
+wq_normMod_objects <- list(
+  pH = aov(pH~site+date, data = wq_list$summ_water_quality),
+  Temp = aov(Temp~site+date, data =  wq_list$summ_water_quality),
+  Flow = aov(Flow~site+date, data =  wq_list$summ_water_quality)
 )
 
 #T2 anova
-wq_tests <- wq_mod_objects %>%
+wq_ANOVAt2 <- wq_normMod_objects %>%
   {list(
-  P = car::Anova(.$P),
   pH = car::Anova(.$pH),
-  NH3 = car::Anova(.$NH3),
-  DO = car::Anova(.$DO),
   Temp = car::Anova(.$Temp),
-  Cond = car::Anova(.$Cond),
   Flow = car::Anova(.$Flow))
   }
 
+#independence test for non-normal params
+wq_indep_tests <-list(
+  P = independence_test(data = wq_list$summ_water_quality, P~ as.factor(site) | as.factor(date)),
+  Nitrogen = independence_test(data = wq_list$summ_water_quality, Nitrogen ~ as.factor(site) | as.factor(date)),
+   NH3 = independence_test(data = wq_list$summ_water_quality, NH3 ~ as.factor(site) | as.factor(date)),
+  DO = independence_test(data = wq_list$summ_water_quality, DO ~ as.factor(site) | as.factor(date)),
+  Cond = independence_test(data = wq_list$summ_water_quality, Cond ~ as.factor(site) | as.factor(date))
+)
 
+independence_test(Cond ~ as.factor(site) | as.factor(date), data = wq_list$summ_water_quality)
+
+#SPECIES COUNTS NMDS----
 #set seed for repeatability
 set.seed(420)
 
@@ -73,5 +88,5 @@ set.seed(420)
 taxaCount_NMDS <- LPP_FullData %>%
   ungroup() %>%
   select(MidgeFlies:RightHandedSnails) %>%
-vegan::metaMDS(.,distance = "bray", k = 3, plot = F)
+vegan::metaMDS(.,distance = "bray", k = 5, plot = T)
 

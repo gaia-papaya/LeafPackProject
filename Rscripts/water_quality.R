@@ -36,7 +36,8 @@ water_quality <- wq %>%
   pivot_longer(cols = ends_with("_Cond"), values_to = "Cond",names_to = "rn_Cond") %>%
   pivot_longer(cols = ends_with("_Nitrogen"), values_to = "Nitrogen",names_to = "rn_Nitrogen") %>%
   pivot_longer(cols = ends_with("_Flow"), values_to = "Flow",names_to = "rn_Flow") %>%
-  select(!starts_with("rn_"))
+  select(!starts_with("rn_")) %>% 
+  filter(P <4) #filter out outlier observations
 
 #summary statistics table grouped by site
 wq_site_summary <- water_quality %>%
@@ -49,6 +50,7 @@ wq_full_summary <- water_quality %>%
   group_by(site, date) %>%
   mutate(across(everything(), .fns = ~sd(., na.rm = T)/n(), .names = "{.col}_se")) %>%
   summarise(across(everything(), .fns = ~mean(., na.rm = TRUE)))
+
 
 #list of water quality objects
 wq_list <- list(raw_water_quality = water_quality,

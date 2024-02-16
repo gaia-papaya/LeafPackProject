@@ -90,21 +90,37 @@ geom_text(aes(y = (index + 3*index_se), label =groups)) +
 #water quality time series plots by site
 #PARAMS:
   #param(string): a string specifying the water quality parameter
-
 wq_ts_BySite <- function(param){
   #create symbol of parameter name and se for tidy eval in ggplot2 call
   param<- sym(param)
   param_se <- sym(paste(param,"se", sep = "_"))
-  ggplot(wq_list$raw_water_quality, aes(x = date, y = !!param, color = site)) +
+  ggplot(wq_list$summ_water_quality, aes(x = date, y = !!param)) +
     #geom layers
-    geom_point() +
-     geom_smooth(method = 'lm')+
+    geom_jitter(height = 0, size = 2) +
+     geom_smooth(method = 'lm', se = T)+
     #labels
     labs(title = paste(param, "Seasonality"), x = "Date")+
     #theme adjustments
     theme_bw() +
     theme_rafa(base_size = 15) +
-    scale_color_viridis_d(begin = 0.1, end = 0.9)
+    scale_color_viridis_d()+
+  scale_fill_viridis_d()
+}
+
+wq_boxplot_BySite <- function(param){
+  #create symbol of parameter name and se for tidy eval in ggplot2 call
+  param<- sym(param)
+  param_se <- sym(paste(param,"se", sep = "_"))
+  ggplot(LPP_FullData, aes(x = site, y = !!param, fill = site)) +
+    #geom layers
+    geom_boxplot()+
+    geom_jitter(width = 0.5, height = 0.0, shape = 21, size = 2) +
+    #labels
+    labs(title = paste(param, "across sites"), x = "Site")+
+    #theme adjustments
+    theme_bw() +
+    theme_rafa(base_size = 15) +
+    scale_fill_viridis_d(option = "E",begin = 0.1, end = 0.9)
 }
 ```
 
@@ -124,6 +140,16 @@ wq_ts_BySite("Cond") + labs(title = "Conductivity Seasonality", y = "Conductivit
 wq_ts_BySite("Nitrogen") + labs(y = "Nitrogen (mg/L)")
 wq_ts_BySite("Flow") + labs(title = "Flow rate Seasonality",
                             x = "Date", y = "Flow (m/s)")
+
+wq_boxplot_BySite("P") + labs(y = "Phosphorous (mg/L)", title = "Phosphorous Variation Across Sites")
+wq_boxplot_BySite("pH")
+wq_boxplot_BySite("NH3")+ labs(y = "Ammonia (mg/L)", title = "Ammonia Variation Across Sites")
+wq_boxplot_BySite("Nitrogen")+ labs(y = "Nitrogen (mg/L)", title = "Nitrogen Variation Across Sites")
+wq_boxplot_BySite("DO") + labs(y = " % DO")
+wq_boxplot_BySite("Flow") + labs(y = "Flow (m/s)", title = "Flow Rate Variation Across Sites")
+wq_boxplot_BySite("Cond") + labs(y = "Conductivity (mS)", title = "Conductivity Variation Across Sites")
+wq_boxplot_BySite("Temp") + labs(y = "Temp (°C)", title = "Temperature Variation Across Sites")
+
 
 #biodiversity plots----
 bt_barplot( "richness")+ labs(x = "Material", y="Richness")  
@@ -164,5 +190,32 @@ ggplot(TC_NMDS_Scores, aes(x = NMDS1, y = NMDS2, fill = material)) +
 ```
 
 
+```{r}
+ggplot(wq_list$summ_water_quality) +
+  #geom_smooth(aes(x = date,color = site, y = NH3), method = "lm", se = T) +
+  geom_point(aes(x = date, fill =site, y = NH3), size = 2.5, shape = 21)+
+  
+  scale_fill_viridis_d(option = "D") +
+  scale_color_viridis_d(option = "D") 
 
+ggplot(wq_list$summ_water_quality, aes(x = NH3, y = site, fill = site)) +
+  geom_boxplot() +
+  geom_jitter(height = 0.2, width = 0.1, shape = 21, size = 1.5) +
+  theme_rafa(base_size = 12)+
+  facet_wrap(~date) +
+  scale_fill_viridis_d() +
+  labs(title = "")
+```
+
+
+```{r}
+#plot of first two NMDS dimensions, with ellipses for bag types
+ordiplot(taxaCount_NMDS)
+ordiellipse(taxaCount_NMDS,LPP_FullData$material, label = FALSE,
+            col=viridis(n = 5),
+            draw = "polygon", alpha=120) # adding ellipses to the plot, grouping by bag type
+title("Similaity of Communities Across Bag Types")
+legend("topright", title="Bag type",
+       c("Biopolymer", "Cellulose" , "Cotton",  "Jute", "Plastic" ), fill=viridis(n = 5), horiz=FALSE, cex=.9) # adding a legend
+```
 
