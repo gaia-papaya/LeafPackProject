@@ -37,7 +37,19 @@ bd_matrices <- list(
   predator_matrix = as.matrix(bd[predator])
 )
 
-#add functional group diversity as column
+#generate a cummul matrix of FunGroups
+FunGroups <- bd %>% 
+  group_by(site, material, date) %>% 
+  summarise(collector = sum(across(starts_with(collector))),
+            shredder = sum(across(starts_with(shredder))),
+            scraper = sum(across(starts_with(scraper))),
+            predator = sum(across(starts_with(predator)))) %>% 
+  ungroup() %>% 
+  mutate(FnG_Richness = hillR::hill_taxa(select(.,"collector":"predator"), q=0),
+         fnG_Shannon = hillR::hill_taxa(select(.,"collector":"predator"), q =1))
+  
+
+#add functional group diversity as column (within groups)
 biodiversity <- bd %>%
   mutate(collector_shannon = vegan::diversity(bd_matrices[["collector_matrix"]]),
          shredder_shannon = vegan::diversity(bd_matrices[["shredder_matrix"]]),

@@ -92,12 +92,14 @@ geom_text(aes(y = (index + 3*index_se), label =groups)) +
   #param(string): a string specifying the water quality parameter
 wq_ts_BySite <- function(param){
   #create symbol of parameter name and se for tidy eval in ggplot2 call
-  param<- sym(param)
   param_se <- sym(paste(param,"se", sep = "_"))
-  ggplot(wq_list$summ_water_quality, aes(x = date, y = !!param)) +
+  param<- sym(paste(param, "mean", sep = "_"))
+  
+  ggplot(water_quality, aes(x = date, y = !!param, color = site)) +
     #geom layers
-    geom_jitter(height = 0, size = 2) +
-     geom_smooth(method = 'lm', se = T)+
+    geom_errorbar(aes(ymin = !!param - 2*!!param_se, ymax = !!param +2*!!param_se), color = "black") +
+    geom_point( size = 2) +
+    facet_wrap(~site) +
     #labels
     labs(title = paste(param, "Seasonality"), x = "Date")+
     #theme adjustments
@@ -109,8 +111,9 @@ wq_ts_BySite <- function(param){
 
 wq_boxplot_BySite <- function(param){
   #create symbol of parameter name and se for tidy eval in ggplot2 call
-  param<- sym(param)
+  
   param_se <- sym(paste(param,"se", sep = "_"))
+  param<- sym(paste(param, "mean", sep = "_"))
   ggplot(LPP_FullData, aes(x = site, y = !!param, fill = site)) +
     #geom layers
     geom_boxplot()+
@@ -191,20 +194,8 @@ ggplot(TC_NMDS_Scores, aes(x = NMDS1, y = NMDS2, fill = material)) +
 
 
 ```{r}
-ggplot(wq_list$summ_water_quality) +
-  #geom_smooth(aes(x = date,color = site, y = NH3), method = "lm", se = T) +
-  geom_point(aes(x = date, fill =site, y = NH3), size = 2.5, shape = 21)+
-  
-  scale_fill_viridis_d(option = "D") +
-  scale_color_viridis_d(option = "D") 
-
-ggplot(wq_list$summ_water_quality, aes(x = NH3, y = site, fill = site)) +
-  geom_boxplot() +
-  geom_jitter(height = 0.2, width = 0.1, shape = 21, size = 1.5) +
-  theme_rafa(base_size = 12)+
-  facet_wrap(~date) +
-  scale_fill_viridis_d() +
-  labs(title = "")
+ggplot(water_quality, aes( x = sqrt(P_mean))) +geom_histogram(bins = 10)
+ggplot(water_quality, aes( x = Nitrogen_mean)) +geom_histogram(bins = 15)
 ```
 
 
@@ -217,5 +208,28 @@ ordiellipse(taxaCount_NMDS,LPP_FullData$material, label = FALSE,
 title("Similaity of Communities Across Bag Types")
 legend("topright", title="Bag type",
        c("Biopolymer", "Cellulose" , "Cotton",  "Jute", "Plastic" ), fill=viridis(n = 5), horiz=FALSE, cex=.9) # adding a legend
+```
+
+
+```{r}
+#prop plots of functional groups
+FunGroups_props <- FunGroups %>% 
+  select(!FnG_Richness & !fnG_Shannon) %>% 
+  pivot_longer(cols = c("collector", "shredder", "scraper", "predator"), names_to = "fn_group", values_to = "counts") %>% 
+  group_by(material, date, site) %>% 
+  mutate(prop_counts = counts/sum(counts)) %>% 
+  group_by(material, fn_group) %>% 
+  mutate(avg_prop = mean(prop_counts),
+         se_prop = sd(prop_counts)/sqrt(n())) %>% 
+  summarise(avg_prop = unique(avg_prop),
+            se_prop = unique(se_prop))
+
+ggplot(FunGroups_props, aes(x = material, y = avg_prop, fill = fn_group)) +
+  geom_col(position = "dodge") +
+  geom_errorbar(aes(ymin = avg_prop -se_prop, ymax = avg_prop +se_prop), position = "dodge") +
+  scale_fill_viridis_d(option = "D", begin = 0.2) +
+  labs(title = "Distribution of Functional Groups across Bag types",
+       y = "Avg. Proportion", caption = "error bars show Standard Error margins")+
+  theme_rafa(base_size = 12)
 ```
 

@@ -1,3 +1,6 @@
+#dependencies----
+require(coin)
+
 #join diversity data and water quality data together
 LPP_FullData <- right_join(x = wq_list$summ_water_quality, y = bd_list$biodiversity, by = c("date", "site"), multiple = "all")
 
@@ -42,43 +45,51 @@ for(t in 1:length(diversity_tests)){
 
 #WATER QUALITY MODELS----
 #normality tests
-wq_norms <- list(P = shapiro.test(wq_list$summ_water_quality$P),
-                 Nitrogen = shapiro.test(wq_list$summ_water_quality$Nitrogen),
-                 pH = shapiro.test(wq_list$summ_water_quality$pH),
-                 NH3 = shapiro.test(wq_list$summ_water_quality$NH3),
-                 DO = shapiro.test(wq_list$summ_water_quality$DO),
-                 Temp = shapiro.test(wq_list$summ_water_quality$Temp),
-                 Cond = shapiro.test(wq_list$summ_water_quality$Cond),
-                 FLow = shapiro.test(wq_list$summ_water_quality$Flow))
+wq_norms <- list(P = shapiro.test(sqrt(water_quality$P_mean)),
+                 Nitrogen = shapiro.test(sqrt(water_quality$Nitrogen_mean)),
+                 pH = shapiro.test(water_quality$pH_mean),
+                 NH3 = shapiro.test(water_quality$NH3_mean),
+                 DO = shapiro.test(water_quality$DO_mean),
+                 Temp = shapiro.test(water_quality$Temp_mean),
+                 Cond = shapiro.test(1/water_quality$Cond_mean),
+                 FLow = shapiro.test(water_quality$Flow_mean))
 
 
 #ANOVA for parameters which pass shapiro test
 #FORMULA: PARAMETER ~ DATE + SITE
 #wq model objects
 wq_normMod_objects <- list(
-  pH = aov(pH~site+date, data = wq_list$summ_water_quality),
-  Temp = aov(Temp~site+date, data =  wq_list$summ_water_quality),
-  Flow = aov(Flow~site+date, data =  wq_list$summ_water_quality)
+  sqrt_P = aov(sqrt(P_mean)~site+date, data = water_quality),
+  sqrt_Nitrogen = aov(sqrt(Nitrogen_mean)~site+date, data = water_quality),
+  pH = aov(pH_mean~site+date, data = water_quality),
+  Temp = aov(Temp_mean~site+date, data =  water_quality),
+  Flow = aov(Flow_mean~site+date, data =  water_quality)
 )
 
 #T2 anova
 wq_ANOVAt2 <- wq_normMod_objects %>%
   {list(
+    sqrt_P = car::Anova(.$sqrt_P),
+    sqrt_Nitrogen = car::Anova(.$sqrt_Nitrogen),
   pH = car::Anova(.$pH),
   Temp = car::Anova(.$Temp),
   Flow = car::Anova(.$Flow))
   }
 
 #independence test for non-normal params
-wq_indep_tests <-list(
-  P = independence_test(data = wq_list$summ_water_quality, P~ as.factor(site) | as.factor(date)),
-  Nitrogen = independence_test(data = wq_list$summ_water_quality, Nitrogen ~ as.factor(site) | as.factor(date)),
-   NH3 = independence_test(data = wq_list$summ_water_quality, NH3 ~ as.factor(site) | as.factor(date)),
-  DO = independence_test(data = wq_list$summ_water_quality, DO ~ as.factor(site) | as.factor(date)),
-  Cond = independence_test(data = wq_list$summ_water_quality, Cond ~ as.factor(site) | as.factor(date))
+wq_kw_tests_site <-list(
+   NH3 =  kruskal.test(data =water_quality, NH3_mean ~ as.factor(site)  ),
+  DO =  kruskal.test(data = water_quality, DO_mean ~ as.factor(site)  ),
+  Cond =  kruskal.test(data = water_quality, Cond_mean ~ as.factor(site)  )
 )
 
-independence_test(Cond ~ as.factor(site) | as.factor(date), data = wq_list$summ_water_quality)
+wq_kw_tests_date <-list(
+  NH3 =  kruskal.test(data =water_quality, NH3_mean ~ as.factor( date)  ),
+  DO =  kruskal.test(data = water_quality, DO_mean ~ as.factor( date)  ),
+  Cond =  kruskal.test(data = water_quality, Cond_mean ~ as.factor( date)  )
+)
+
+
 
 #SPECIES COUNTS NMDS----
 #set seed for repeatability

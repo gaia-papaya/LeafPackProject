@@ -5,6 +5,7 @@ wq <- readxl::read_excel("Rdata/LPP.xlsx",sheet = 2, na = "NA") %>%
   pivot_wider( names_from ="param", values_from = c("d_rep1", "d_rep2", "d_rep3",
                                                     "m_rep1", "m_rep2", "m_rep3",
                                                     "u_rep1", "u_rep2", "u_rep3")) #pivot wider  by the rep columns
+
 #separate into 3 tables corresp to site, and remove site prefix for easy merging
 #DOWNSTREAM
 d_wq <- wq %>%
@@ -25,37 +26,52 @@ u_wq <- wq %>%
 wq <- bind_rows(d_wq,m_wq,u_wq) %>%
   select(date, site, everything()) %>%
   arrange(date)
+  
 
 #pivot into longer format to condense rep columns into 1
 water_quality <- wq %>%
-  pivot_longer(cols = ends_with("_P"), values_to = "P",names_to = "rn_P") %>%
+  group_by(date, site) %>% 
+  pivot_longer(cols = ends_with("_P"), values_to = "P",names_to = "rn_P") %>% 
+  mutate(P_mean = mean(P, na.rm = T),
+         P_se = sd(P, na.rm = T)/sqrt(n())) %>% 
+  distinct(P_mean,.keep_all = T) %>% 
+  select(!rn_P) %>% 
   pivot_longer(cols = ends_with("_pH"), values_to = "pH",names_to = "rn_pH") %>%
+    mutate(pH_mean = mean(pH, na.rm = T),
+           pH_se = sd(pH, na.rm = T)/sqrt(n())) %>% 
+    distinct(pH_mean,.keep_all = T) %>% 
+  select(!rn_pH) %>% 
   pivot_longer(cols = ends_with("_NH3"), values_to = "NH3",names_to = "rn_NH3") %>%
+  mutate(NH3_mean = mean(NH3, na.rm = T),
+         NH3_se = sd(NH3, na.rm = T)/sqrt(n())) %>% 
+  distinct(NH3_mean,.keep_all = T) %>% 
+  select(!rn_NH3) %>% 
   pivot_longer(cols = ends_with("_DO"), values_to = "DO",names_to = "rn_DO") %>%
+  mutate(DO_mean = mean(DO, na.rm = T),
+         DO_se = sd(DO, na.rm = T)/sqrt(n())) %>% 
+  distinct(DO_mean,.keep_all = T) %>% 
+  select(!rn_DO) %>% 
   pivot_longer(cols = ends_with("_Temp"), values_to = "Temp",names_to = "rn_Temp")%>%
+  mutate(Temp_mean = mean(Temp, na.rm = T),
+         Temp_se = sd(Temp, na.rm = T)/sqrt(n())) %>% 
+  distinct(Temp_mean,.keep_all = T) %>% 
+  select(!rn_Temp) %>% 
   pivot_longer(cols = ends_with("_Cond"), values_to = "Cond",names_to = "rn_Cond") %>%
+  mutate(Cond_mean = mean(Cond, na.rm = T),
+         Cond_se = sd(Cond, na.rm = T)/sqrt(n())) %>% 
+  distinct(Cond_mean,.keep_all = T) %>% 
+  select(!rn_Cond) %>% 
   pivot_longer(cols = ends_with("_Nitrogen"), values_to = "Nitrogen",names_to = "rn_Nitrogen") %>%
+  mutate(Nitrogen_mean = mean(Nitrogen, na.rm = T),
+         Nitrogen_se = sd(Nitrogen, na.rm = T)/sqrt(n())) %>% 
+  distinct(Nitrogen_mean,.keep_all = T) %>% 
+  select(!rn_Nitrogen) %>% 
   pivot_longer(cols = ends_with("_Flow"), values_to = "Flow",names_to = "rn_Flow") %>%
-  select(!starts_with("rn_")) %>% 
-  filter(P <4) #filter out outlier observations
-
-#summary statistics table grouped by site
-wq_site_summary <- water_quality %>%
-  group_by(site) %>%
-  mutate(across(everything(), .fns = ~sd(., na.rm = T)/n(), .names = "{.col}_se")) %>%
-  summarise(across( .fns = ~mean(., na.rm = TRUE)))
-
-#summary statistics table grouped by site and date
-wq_full_summary <- water_quality %>%
-  group_by(site, date) %>%
-  mutate(across(everything(), .fns = ~sd(., na.rm = T)/n(), .names = "{.col}_se")) %>%
-  summarise(across(everything(), .fns = ~mean(., na.rm = TRUE)))
-
-
-#list of water quality objects
-wq_list <- list(raw_water_quality = water_quality,
-                site_summ_wq = wq_site_summary,
-                summ_water_quality = wq_full_summary)
+  mutate(Flow_mean = mean(Flow, na.rm = T),
+         Flow_se = sd(Flow, na.rm = T)/sqrt(n())) %>% 
+  distinct(Flow_mean,.keep_all = T) %>% 
+  select(!rn_Flow & ends_with("mean") | ends_with("se")) %>%  
+ filter(P_mean <4) #filter out outlier observations
 
 #delete intermediary wq objects
-rm(d_wq, m_wq, u_wq, wq, water_quality, wq_site_summary, wq_full_summary)
+rm(d_wq, m_wq, u_wq, wq)
